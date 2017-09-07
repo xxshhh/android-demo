@@ -8,6 +8,10 @@ import java.io.LineNumberReader;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * 代码行数工具类
+ * Created by xxshhh on 2017/9/7.
+ */
 public class CodeLinesUtils {
 
     /**
