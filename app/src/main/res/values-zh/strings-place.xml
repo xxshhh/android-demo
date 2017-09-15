@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="place_title">标题</string>
+    <string name="place_title_long">长标题长标题长标题长标题长标题长标题长标题长标题长标题长标题</string>
+    <string name="place_text">这是一段文字！</string>
+    <string name="place_text_long">这是一段长文字！这是一段长文字！这是一段长文字！这是一段长文字！这是一段长文字！</string>
+
+    <string name="place_number">9</string>
+    <string name="place_number_max">99+</string>
+
+</resources>

@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="place_title">Head</string>
+    <string name="place_title_long">Head Head Head Head Head Head Head Head Head Head</string>
+    <string name="place_text">This is content!</string>
+    <string name="place_text_long">This is content!This is content!This is content!This is content!This is content!</string>
+
+    <string name="place_number">9</string>
+    <string name="place_number_max">99+</string>
+
+</resources>

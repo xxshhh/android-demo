@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+      xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <group
+        android:id="@+id/nav_group_core"
+        android:checkableBehavior="single">
+        <item
+            android:id="@+id/nav_mine"
+            android:title="@string/mine"
+            app:actionLayout="@layout/home_nav_item"/>
+        <item
+            android:id="@+id/nav_official_practice"
+            android:title="@string/official_practice"
+            app:actionLayout="@layout/home_nav_item"/>
+        <item
+            android:id="@+id/nav_third_lib"
+            android:title="@string/third_lib"
+            app:actionLayout="@layout/home_nav_item"/>
+    </group>
+
+    <group
+        android:id="@+id/nav_group_others"
+        android:checkableBehavior="single">
+        <item
+            android:id="@+id/nav_magic"
+            android:title="@string/magic"/>
+        <item
+            android:id="@+id/nav_setting"
+            android:title="@string/setting"/>
+    </group>
+
+</menu>
