@@ -1,6 +1,7 @@
 package com.xxshhh.android.android_demo.home.activity;
 
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -20,8 +21,7 @@ import butterknife.ButterKnife;
  * 首页界面
  * Created by xwh on 2017/9/14
  */
-public class HomeActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener {
+public class HomeActivity extends AppCompatActivity {
 
     @BindView(R.id.toolbar)
     Toolbar mToolbar;
@@ -36,10 +36,10 @@ public class HomeActivity extends AppCompatActivity
         setContentView(R.layout.home_activity);
         ButterKnife.bind(this);
 
-        initView();
+        init();
     }
 
-    private void initView() {
+    private void init() {
         initToolbar();
         initDrawerLayout();
         initNavigationView();
@@ -57,13 +57,46 @@ public class HomeActivity extends AppCompatActivity
     }
 
     private void initNavigationView() {
-        mNavView.setNavigationItemSelectedListener(this);
+        setupNavIcon();
+        setupNavItemListener();
+    }
+
+    private void setupNavIcon() {
         Menu menu = mNavView.getMenu();
         menu.findItem(R.id.nav_mine).setIcon(HomeNavIconUtils.getSmileIcon(this));
         menu.findItem(R.id.nav_official_practice).setIcon(HomeNavIconUtils.getPhoneIcon(this));
         menu.findItem(R.id.nav_third_lib).setIcon(HomeNavIconUtils.getLightIcon(this));
         menu.findItem(R.id.nav_magic).setIcon(HomeNavIconUtils.getMagicIcon(this));
         menu.findItem(R.id.nav_setting).setIcon(HomeNavIconUtils.getSettingIcon(this));
+    }
+
+    private void setupNavItemListener() {
+        mNavView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                int id = item.getItemId();
+                switch (id) {
+                    case R.id.nav_mine:
+                        break;
+                    case R.id.nav_official_practice:
+                        break;
+                    case R.id.nav_third_lib:
+                        break;
+                    case R.id.nav_magic:
+                        break;
+                    case R.id.nav_setting:
+                        break;
+                    default:
+                        break;
+                }
+
+                if (getSupportActionBar() != null) {
+                    getSupportActionBar().setTitle(item.getTitle());
+                }
+                mDrawerLayout.closeDrawer(GravityCompat.START);
+                return true;
+            }
+        });
     }
 
     @Override
@@ -73,28 +106,6 @@ public class HomeActivity extends AppCompatActivity
         } else {
             super.onBackPressed();
         }
-    }
-
-    @SuppressWarnings("StatementWithEmptyBody")
-    @Override
-    public boolean onNavigationItemSelected(MenuItem item) {
-        // Handle navigation view item clicks here.
-        int id = item.getItemId();
-
-        if (id == R.id.nav_mine) {
-            // Handle the camera action
-        } else if (id == R.id.nav_official_practice) {
-
-        } else if (id == R.id.nav_third_lib) {
-
-        } else if (id == R.id.nav_magic) {
-
-        } else if (id == R.id.nav_setting) {
-
-        }
-
-        mDrawerLayout.closeDrawer(GravityCompat.START);
-        return true;
     }
 
 }
