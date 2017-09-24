@@ -1,4 +1,4 @@
-package com.xxshhh.android.android_demo.function.practice.fragment;
+package com.xxshhh.android.android_demo.function.practice;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -7,7 +7,8 @@ import android.widget.Button;
 
 import com.xxshhh.android.android_demo.R;
 import com.xxshhh.android.android_demo.base.fragment.BaseFragment;
-import com.xxshhh.android.android_demo.function.common.activity.CommonContainerActivity;
+import com.xxshhh.android.android_demo.common.activity.CommonContainerActivity;
+import com.xxshhh.android.android_demo.function.practice.animation.fragment.AnimationTweenFragment;
 
 import butterknife.BindView;
 
@@ -45,7 +46,7 @@ public class PracticeFragment extends BaseFragment {
     }
 
     private void jumpToAnimation() {
-        CommonContainerActivity.start(getContext(), PracticeAnimationFragment.class);
+        CommonContainerActivity.start(getContext(), AnimationTweenFragment.class);
     }
 
 }

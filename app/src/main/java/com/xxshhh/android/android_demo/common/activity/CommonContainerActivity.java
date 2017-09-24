@@ -1,4 +1,4 @@
-package com.xxshhh.android.android_demo.function.common.activity;
+package com.xxshhh.android.android_demo.common.activity;
 
 import android.content.Context;
 import android.content.Intent;

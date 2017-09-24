@@ -15,7 +15,7 @@ import android.widget.FrameLayout;
 import com.xxshhh.android.android_demo.R;
 import com.xxshhh.android.android_demo.base.activity.BaseActivity;
 import com.xxshhh.android.android_demo.function.home.utils.HomeNavIconUtils;
-import com.xxshhh.android.android_demo.function.practice.fragment.PracticeFragment;
+import com.xxshhh.android.android_demo.function.practice.PracticeFragment;
 
 import butterknife.BindView;
 

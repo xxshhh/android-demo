@@ -18,7 +18,7 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".function.common.activity.CommonContainerActivity"/>
+        <activity android:name=".common.activity.CommonContainerActivity"/>
     </application>
 
 </manifest>
