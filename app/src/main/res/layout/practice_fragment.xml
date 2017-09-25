@@ -9,15 +9,21 @@
               android:paddingTop="@dimen/activity_vertical_margin">
 
     <Button
-        android:id="@+id/btn_animation"
+        android:id="@+id/btn_animation_tween"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/practice_animation"/>
+        android:text="@string/practice_animation_tween"/>
 
     <Button
-        android:id="@+id/btn_animation2"
+        android:id="@+id/btn_animation_property"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/practice_animation"/>
+        android:text="@string/practice_animation_property"/>
+
+    <Button
+        android:id="@+id/btn_animation_demo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/practice_animation_demo"/>
 
 </LinearLayout>

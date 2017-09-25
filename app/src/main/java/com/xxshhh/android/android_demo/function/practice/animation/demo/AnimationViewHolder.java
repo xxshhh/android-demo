@@ -1,4 +1,4 @@
-package com.xxshhh.android.android_demo.function.practice.animation.item;
+package com.xxshhh.android.android_demo.function.practice.animation.demo;
 
 import android.animation.Keyframe;
 import android.animation.ObjectAnimator;

@@ -1,4 +1,4 @@
-package com.xxshhh.android.android_demo.function.practice.animation.fragment;
+package com.xxshhh.android.android_demo.function.practice.animation.tween;
 
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
@@ -21,7 +21,6 @@ import com.mikepenz.community_material_typeface_library.CommunityMaterial;
 import com.mikepenz.iconics.IconicsDrawable;
 import com.xxshhh.android.android_demo.R;
 import com.xxshhh.android.android_demo.base.fragment.BaseFragment;
-import com.xxshhh.android.android_demo.function.practice.animation.view.AnimationSeekBarView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -309,22 +308,22 @@ public class AnimationTweenFragment extends BaseFragment {
         if (mFromXScaleView == null) {
             mFromXScaleView = new AnimationSeekBarView(getContext());
         }
-        mFromXScaleView.init("fromXScale", 0, 1, 0, 2);
+        mFromXScaleView.init("fromXScale", 0, 3, 0, 2);
 
         if (mToXScaleView == null) {
             mToXScaleView = new AnimationSeekBarView(getContext());
         }
-        mToXScaleView.init("toXScale", 0, 1, 1, 2);
+        mToXScaleView.init("toXScale", 0, 3, 2, 2);
 
         if (mFromYScaleView == null) {
             mFromYScaleView = new AnimationSeekBarView(getContext());
         }
-        mFromYScaleView.init("fromYScale", 0, 1, 0, 2);
+        mFromYScaleView.init("fromYScale", 0, 3, 0, 2);
 
         if (mToYScaleView == null) {
             mToYScaleView = new AnimationSeekBarView(getContext());
         }
-        mToYScaleView.init("toYScale", 0, 1, 1, 2);
+        mToYScaleView.init("toYScale", 0, 3, 2, 2);
 
         if (mPivotXView == null) {
             mPivotXView = new AnimationSeekBarView(getContext());
@@ -369,22 +368,22 @@ public class AnimationTweenFragment extends BaseFragment {
         if (mFromXDeltaView == null) {
             mFromXDeltaView = new AnimationSeekBarView(getContext());
         }
-        mFromXDeltaView.init("fromXDelta", 0, 1, 0, 2);
+        mFromXDeltaView.init("fromXDelta", -1, 1, -1, 2);
 
         if (mToXDeltaView == null) {
             mToXDeltaView = new AnimationSeekBarView(getContext());
         }
-        mToXDeltaView.init("toXDelta", 0, 1, 1, 2);
+        mToXDeltaView.init("toXDelta", -1, 1, 1, 2);
 
         if (mFromYDeltaView == null) {
             mFromYDeltaView = new AnimationSeekBarView(getContext());
         }
-        mFromYDeltaView.init("fromYDelta", 0, 1, 0, 2);
+        mFromYDeltaView.init("fromYDelta", -1, 1, -1, 2);
 
         if (mToYDeltaView == null) {
             mToYDeltaView = new AnimationSeekBarView(getContext());
         }
-        mToYDeltaView.init("toYDelta", 0, 1, 1, 2);
+        mToYDeltaView.init("toYDelta", -1, 1, 1, 2);
 
         List<View> views = new ArrayList<>();
         views.add(mFromXDeltaView.mView);

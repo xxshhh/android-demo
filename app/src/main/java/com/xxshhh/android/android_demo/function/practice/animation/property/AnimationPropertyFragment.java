@@ -1,4 +1,4 @@
-package com.xxshhh.android.android_demo.function.practice.animation.fragment;
+package com.xxshhh.android.android_demo.function.practice.animation.property;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;

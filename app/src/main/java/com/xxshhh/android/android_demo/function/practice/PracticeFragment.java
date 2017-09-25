@@ -8,8 +8,8 @@ import android.widget.Button;
 import com.xxshhh.android.android_demo.R;
 import com.xxshhh.android.android_demo.base.fragment.BaseFragment;
 import com.xxshhh.android.android_demo.common.activity.CommonContainerActivity;
-import com.xxshhh.android.android_demo.function.practice.animation.fragment.AnimationFragment;
-import com.xxshhh.android.android_demo.function.practice.animation.fragment.AnimationTweenFragment;
+import com.xxshhh.android.android_demo.function.practice.animation.demo.AnimationDemoFragment;
+import com.xxshhh.android.android_demo.function.practice.animation.tween.AnimationTweenFragment;
 
 import butterknife.BindView;
 
@@ -19,11 +19,12 @@ import butterknife.BindView;
  */
 public class PracticeFragment extends BaseFragment {
 
-    @BindView(R.id.btn_animation)
-    Button mBtnAnimation;
-
-    @BindView(R.id.btn_animation2)
-    Button mBtnAnimation2;
+    @BindView(R.id.btn_animation_tween)
+    Button mBtnAnimationTween;
+    @BindView(R.id.btn_animation_property)
+    Button mBtnAnimationProperty;
+    @BindView(R.id.btn_animation_demo)
+    Button mBtnAnimationDemo;
 
     @Override
     protected int getLayoutResID() {
@@ -41,7 +42,7 @@ public class PracticeFragment extends BaseFragment {
     }
 
     private void initAnimation() {
-        mBtnAnimation.setOnClickListener(new View.OnClickListener() {
+        mBtnAnimationTween.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 CommonContainerActivity.start(getContext(), AnimationTweenFragment.class);
@@ -49,10 +50,16 @@ public class PracticeFragment extends BaseFragment {
             }
         });
 
-        mBtnAnimation2.setOnClickListener(new View.OnClickListener() {
+        mBtnAnimationProperty.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                CommonContainerActivity.start(getContext(), AnimationFragment.class);
+            }
+        });
+
+        mBtnAnimationDemo.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                CommonContainerActivity.start(getContext(), AnimationDemoFragment.class);
             }
         });
     }

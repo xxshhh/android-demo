@@ -1,4 +1,4 @@
-package com.xxshhh.android.android_demo.function.practice.animation.fragment;
+package com.xxshhh.android.android_demo.function.practice.animation.demo;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
@@ -23,15 +23,15 @@ import com.mikepenz.community_material_typeface_library.CommunityMaterial;
 import com.mikepenz.iconics.IconicsDrawable;
 import com.xxshhh.android.android_demo.R;
 import com.xxshhh.android.android_demo.base.fragment.BaseFragment;
-import com.xxshhh.android.android_demo.function.practice.animation.adapter.AnimationAdapter;
+import com.xxshhh.android.android_demo.function.practice.animation.demo.AnimationAdapter;
 
 import butterknife.BindView;
 
 /**
- * 动画界面
+ * Demo动画界面
  * Created by xxshhh on 2017/9/19.
  */
-public class AnimationFragment extends BaseFragment {
+public class AnimationDemoFragment extends BaseFragment {
 
     @BindView(R.id.rl_root)
     RelativeLayout mRlRoot;
@@ -48,7 +48,7 @@ public class AnimationFragment extends BaseFragment {
 
     @Override
     protected int getLayoutResID() {
-        return R.layout.animation_fragment;
+        return R.layout.animation_fragment_demo;
     }
 
     @Override

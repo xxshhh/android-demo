@@ -11,5 +11,8 @@
     <string name="setting">Setting</string>
 
     <string name="practice_animation">Animation</string>
+    <string name="practice_animation_tween">Tween Animation</string>
+    <string name="practice_animation_property">Property Animation</string>
+    <string name="practice_animation_demo">Demo Animation</string>
 
 </resources>

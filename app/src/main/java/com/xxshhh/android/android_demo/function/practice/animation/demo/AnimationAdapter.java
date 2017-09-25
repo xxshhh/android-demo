@@ -1,4 +1,4 @@
-package com.xxshhh.android.android_demo.function.practice.animation.adapter;
+package com.xxshhh.android.android_demo.function.practice.animation.demo;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
@@ -8,7 +8,6 @@ import android.view.ViewGroup;
 
 import com.xxshhh.android.android_demo.R;
 import com.xxshhh.android.android_demo.base.adapter.BaseAdapter;
-import com.xxshhh.android.android_demo.function.practice.animation.item.AnimationViewHolder;
 
 /**
  * 动画适配器
