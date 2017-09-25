@@ -50,8 +50,6 @@ public class AnimationTweenFragment extends BaseFragment {
     RadioButton mRbScale;
     @BindView(R.id.rb_translate)
     RadioButton mRbTranslate;
-    @BindView(R.id.rb_set)
-    RadioButton mRbSet;
     @BindView(R.id.rg_tween)
     RadioGroup mRgTween;
     @BindView(R.id.sw_fillAfter)
@@ -68,11 +66,13 @@ public class AnimationTweenFragment extends BaseFragment {
     // alpha
     private AnimationSeekBarView mFromAlphaView;
     private AnimationSeekBarView mToAlphaView;
+
+    // rotate & scale
+    private AnimationSeekBarView mPivotXView;
+    private AnimationSeekBarView mPivotYView;
     // rotate
     private AnimationSeekBarView mFromDegreesView;
     private AnimationSeekBarView mToDegreesView;
-    private AnimationSeekBarView mPivotXView;
-    private AnimationSeekBarView mPivotYView;
     // scale
     private AnimationSeekBarView mFromXScaleView;
     private AnimationSeekBarView mToXScaleView;
@@ -83,7 +83,6 @@ public class AnimationTweenFragment extends BaseFragment {
     private AnimationSeekBarView mToXDeltaView;
     private AnimationSeekBarView mFromYDeltaView;
     private AnimationSeekBarView mToYDeltaView;
-    // set
 
     @Override
     protected int getLayoutResID() {
@@ -149,8 +148,6 @@ public class AnimationTweenFragment extends BaseFragment {
             case R.id.rb_translate:
                 animation = getTranslateAnimation();
                 break;
-            case R.id.rb_set:
-                break;
             default:
         }
         if (animation == null) {
@@ -204,11 +201,9 @@ public class AnimationTweenFragment extends BaseFragment {
 
         if (mDurationView == null) {
             mDurationView = new AnimationSeekBarView(getContext());
-            mDurationView.init("duration", 0, 5000, 1000, 0);
             mLlContainerCommon.addView(mDurationView.mView);
-        } else {
-            mDurationView.init("duration", 0, 5000, 1000, 0);
         }
+        mDurationView.init("duration", 0, 5000, 1000, 0);
     }
 
     private void resetContainerIndividual(@IdRes int checkedId) {
@@ -226,8 +221,6 @@ public class AnimationTweenFragment extends BaseFragment {
             case R.id.rb_translate:
                 views = getTranslateViews();
                 break;
-            case R.id.rb_set:
-                break;
             default:
         }
         if (views == null || views.size() == 0) {
@@ -241,10 +234,14 @@ public class AnimationTweenFragment extends BaseFragment {
     }
 
     private List<View> getAlphaViews() {
-        mFromAlphaView = new AnimationSeekBarView(getContext());
+        if (mFromAlphaView == null) {
+            mFromAlphaView = new AnimationSeekBarView(getContext());
+        }
         mFromAlphaView.init("fromAlpha", 0, 1, 0, 2);
 
-        mToAlphaView = new AnimationSeekBarView(getContext());
+        if (mToAlphaView == null) {
+            mToAlphaView = new AnimationSeekBarView(getContext());
+        }
         mToAlphaView.init("toAlpha", 0, 1, 1, 2);
 
         List<View> views = new ArrayList<>();
@@ -264,17 +261,25 @@ public class AnimationTweenFragment extends BaseFragment {
     }
 
     private List<View> getRotateViews() {
-        mFromDegreesView = new AnimationSeekBarView(getContext());
+        if (mFromDegreesView == null) {
+            mFromDegreesView = new AnimationSeekBarView(getContext());
+        }
         mFromDegreesView.init("fromDegrees", 0, 1080, 0, 0);
 
-        mToDegreesView = new AnimationSeekBarView(getContext());
+        if (mToDegreesView == null) {
+            mToDegreesView = new AnimationSeekBarView(getContext());
+        }
         mToDegreesView.init("toDegrees", 0, 1080, 360, 0);
 
-        mPivotXView = new AnimationSeekBarView(getContext());
-        mPivotXView.init("pivotXValue", 0, 1, 0.5f, 2);
+        if (mPivotXView == null) {
+            mPivotXView = new AnimationSeekBarView(getContext());
+        }
+        mPivotXView.init("pivotX", 0, 1, 0.5f, 2);
 
-        mPivotYView = new AnimationSeekBarView(getContext());
-        mPivotYView.init("pivotYValue", 0, 1, 0.5f, 2);
+        if (mPivotYView == null) {
+            mPivotYView = new AnimationSeekBarView(getContext());
+        }
+        mPivotYView.init("pivotY", 0, 1, 0.5f, 2);
 
         List<View> views = new ArrayList<>();
         views.add(mFromDegreesView.mView);
@@ -301,23 +306,35 @@ public class AnimationTweenFragment extends BaseFragment {
     }
 
     private List<View> getScaleViews() {
-        mFromXScaleView = new AnimationSeekBarView(getContext());
-        mFromXScaleView.init("fromX", 0, 1, 0, 2);
+        if (mFromXScaleView == null) {
+            mFromXScaleView = new AnimationSeekBarView(getContext());
+        }
+        mFromXScaleView.init("fromXScale", 0, 1, 0, 2);
 
-        mToXScaleView = new AnimationSeekBarView(getContext());
-        mToXScaleView.init("toX", 0, 1, 1, 2);
+        if (mToXScaleView == null) {
+            mToXScaleView = new AnimationSeekBarView(getContext());
+        }
+        mToXScaleView.init("toXScale", 0, 1, 1, 2);
 
-        mFromYScaleView = new AnimationSeekBarView(getContext());
-        mFromYScaleView.init("fromY", 0, 1, 0, 2);
+        if (mFromYScaleView == null) {
+            mFromYScaleView = new AnimationSeekBarView(getContext());
+        }
+        mFromYScaleView.init("fromYScale", 0, 1, 0, 2);
 
-        mToYScaleView = new AnimationSeekBarView(getContext());
-        mToYScaleView.init("toY", 0, 1, 1, 2);
+        if (mToYScaleView == null) {
+            mToYScaleView = new AnimationSeekBarView(getContext());
+        }
+        mToYScaleView.init("toYScale", 0, 1, 1, 2);
 
-        mPivotXView = new AnimationSeekBarView(getContext());
-        mPivotXView.init("pivotXValue", 0, 1, 0.5f, 2);
+        if (mPivotXView == null) {
+            mPivotXView = new AnimationSeekBarView(getContext());
+        }
+        mPivotXView.init("pivotX", 0, 1, 0.5f, 2);
 
-        mPivotYView = new AnimationSeekBarView(getContext());
-        mPivotYView.init("pivotYValue", 0, 1, 0.5f, 2);
+        if (mPivotYView == null) {
+            mPivotYView = new AnimationSeekBarView(getContext());
+        }
+        mPivotYView.init("pivotY", 0, 1, 0.5f, 2);
 
         List<View> views = new ArrayList<>();
         views.add(mFromXScaleView.mView);
@@ -330,6 +347,12 @@ public class AnimationTweenFragment extends BaseFragment {
     }
 
     private Animation getScaleAnimation() {
+        if (mFromXScaleView == null || mToXScaleView == null ||
+                mFromYScaleView == null || mToYScaleView == null ||
+                mPivotXView == null || mPivotYView == null) {
+            return null;
+        }
+
         float fromX = mFromXScaleView.getValue();
         float toX = mToXScaleView.getValue();
         float fromY = mFromYScaleView.getValue();
@@ -343,17 +366,25 @@ public class AnimationTweenFragment extends BaseFragment {
     }
 
     private List<View> getTranslateViews() {
-        mFromXDeltaView = new AnimationSeekBarView(getContext());
-        mFromXDeltaView.init("fromXValue", 0, 1, 0, 2);
+        if (mFromXDeltaView == null) {
+            mFromXDeltaView = new AnimationSeekBarView(getContext());
+        }
+        mFromXDeltaView.init("fromXDelta", 0, 1, 0, 2);
 
-        mToXDeltaView = new AnimationSeekBarView(getContext());
-        mToXDeltaView.init("toXValue", 0, 1, 1, 2);
+        if (mToXDeltaView == null) {
+            mToXDeltaView = new AnimationSeekBarView(getContext());
+        }
+        mToXDeltaView.init("toXDelta", 0, 1, 1, 2);
 
-        mFromYDeltaView = new AnimationSeekBarView(getContext());
-        mFromYDeltaView.init("fromYValue", 0, 1, 0, 2);
+        if (mFromYDeltaView == null) {
+            mFromYDeltaView = new AnimationSeekBarView(getContext());
+        }
+        mFromYDeltaView.init("fromYDelta", 0, 1, 0, 2);
 
-        mToYDeltaView = new AnimationSeekBarView(getContext());
-        mToYDeltaView.init("toYValue", 0, 1, 1, 2);
+        if (mToYDeltaView == null) {
+            mToYDeltaView = new AnimationSeekBarView(getContext());
+        }
+        mToYDeltaView.init("toYDelta", 0, 1, 1, 2);
 
         List<View> views = new ArrayList<>();
         views.add(mFromXDeltaView.mView);
@@ -364,6 +395,11 @@ public class AnimationTweenFragment extends BaseFragment {
     }
 
     private Animation getTranslateAnimation() {
+        if (mFromXDeltaView == null || mToXDeltaView == null ||
+                mFromYDeltaView == null || mToYDeltaView == null) {
+            return null;
+        }
+
         int fromXType = Animation.RELATIVE_TO_SELF;
         float fromXValue = mFromXDeltaView.getValue();
         int toXType = Animation.RELATIVE_TO_SELF;
