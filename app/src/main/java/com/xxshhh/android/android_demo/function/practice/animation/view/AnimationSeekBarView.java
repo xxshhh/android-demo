@@ -28,23 +28,46 @@ public class AnimationSeekBarView {
     @BindView(R.id.sb_value)
     SeekBar mSbValue;
 
+    private String mLabelString;
+    private float mMinValue;
+    private float mMaxValue;
+    private float mDefaultValue;
+    private int mValueScale;
+
     public AnimationSeekBarView(Context context) {
         mView = LayoutInflater.from(context).inflate(R.layout.animation_view_seekbar, null);
         ButterKnife.bind(this, mView);
     }
 
-    public void init(String label, final float min, final float max, float defaultValue, final int scale) {
-        mTvLabel.setText(label);
-        mTvValue.setText(String.valueOf(defaultValue));
-        int defaultProgress = (int) ((defaultValue - min) / (max - min));
+    public void init(String labelString, final float minValue, final float maxValue, float defaultValue, final int valueScale) {
+        mLabelString = labelString;
+        mMinValue = minValue;
+        mMaxValue = maxValue;
+        mDefaultValue = defaultValue;
+        mValueScale = valueScale;
+
+        initLabel();
+        initValueText();
+        initSeekBar();
+    }
+
+    private void initLabel() {
+        mTvLabel.setText(mLabelString);
+    }
+
+    private void initValueText() {
+        setValue(mDefaultValue);
+    }
+
+    private void initSeekBar() {
+        int defaultProgress = (int) ((mDefaultValue - mMinValue) / (mMaxValue - mMinValue) * 100);
         mSbValue.setMax(100);
         mSbValue.setProgress(defaultProgress);
         mSbValue.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                float value = min + progress / 100 * (max - min);
-                value = new BigDecimal(value).setScale(scale, BigDecimal.ROUND_HALF_UP).floatValue();
-                mTvValue.setText(String.valueOf(value));
+                float value = (float) (mMinValue + progress / 100.0 * (mMaxValue - mMinValue));
+                setValue(value);
             }
 
             @Override
@@ -55,6 +78,19 @@ public class AnimationSeekBarView {
             public void onStopTrackingTouch(SeekBar seekBar) {
             }
         });
+    }
+
+    private void setValue(float value) {
+        if (mValueScale > 0) {
+            value = new BigDecimal(value).setScale(mValueScale, BigDecimal.ROUND_HALF_UP).floatValue();
+            mTvValue.setText(String.valueOf(value));
+        } else {
+            mTvValue.setText(String.valueOf((int) value));
+        }
+    }
+
+    public float getValue() {
+        return Float.parseFloat(mTvValue.getText().toString());
     }
 
 }

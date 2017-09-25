@@ -4,9 +4,18 @@
               android:layout_height="match_parent"
               android:orientation="vertical">
 
-    <ImageView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"/>
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <ImageView
+            android:id="@+id/iv_avatar"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:layout_centerInParent="true"
+            android:layout_margin="80dp"/>
+
+    </RelativeLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -22,19 +31,19 @@
                 android:id="@+id/btn_start"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="start"/>
+                android:text="Start"/>
 
             <Button
-                android:id="@+id/btn_pause"
+                android:id="@+id/btn_stop"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="pause"/>
+                android:text="Stop"/>
 
             <Button
                 android:id="@+id/btn_reset"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="reset"/>
+                android:text="Reset"/>
 
         </LinearLayout>
 
@@ -87,10 +96,36 @@
         </RadioGroup>
 
         <LinearLayout
-            android:id="@+id/ll_container"
+            android:id="@+id/ll_container_common"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:paddingLeft="5dp"
+            android:paddingRight="5dp">
+
+            <Switch
+                android:id="@+id/sw_fillAfter"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:switchPadding="5dp"
+                android:text="fillAfter"/>
+
+            <Switch
+                android:id="@+id/sw_repeatMode"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:switchPadding="5dp"
+                android:text="repeatMode"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/ll_container_individual"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingLeft="5dp"
+            android:paddingRight="5dp">
 
         </LinearLayout>
 

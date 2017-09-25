@@ -39,5 +39,6 @@ dependencies {
     // Android-Iconics
     compile "com.mikepenz:iconics-core:2.9.3@aar"
     compile 'com.mikepenz:pixeden-7-stroke-typeface:1.2.0.1@aar'
+    compile 'com.mikepenz:community-material-typeface:1.9.32.2@aar'
 
 }

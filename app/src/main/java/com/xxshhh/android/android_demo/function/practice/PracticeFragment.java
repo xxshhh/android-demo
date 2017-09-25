@@ -8,18 +8,22 @@ import android.widget.Button;
 import com.xxshhh.android.android_demo.R;
 import com.xxshhh.android.android_demo.base.fragment.BaseFragment;
 import com.xxshhh.android.android_demo.common.activity.CommonContainerActivity;
+import com.xxshhh.android.android_demo.function.practice.animation.fragment.AnimationFragment;
 import com.xxshhh.android.android_demo.function.practice.animation.fragment.AnimationTweenFragment;
 
 import butterknife.BindView;
 
 /**
  * 官方实践界面
- * Created by xwh on 2017/9/19
+ * Created by xxshhh on 2017/9/19.
  */
 public class PracticeFragment extends BaseFragment {
 
     @BindView(R.id.btn_animation)
     Button mBtnAnimation;
+
+    @BindView(R.id.btn_animation2)
+    Button mBtnAnimation2;
 
     @Override
     protected int getLayoutResID() {
@@ -40,13 +44,17 @@ public class PracticeFragment extends BaseFragment {
         mBtnAnimation.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                jumpToAnimation();
+                CommonContainerActivity.start(getContext(), AnimationTweenFragment.class);
+
             }
         });
-    }
 
-    private void jumpToAnimation() {
-        CommonContainerActivity.start(getContext(), AnimationTweenFragment.class);
+        mBtnAnimation2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                CommonContainerActivity.start(getContext(), AnimationFragment.class);
+            }
+        });
     }
 
 }

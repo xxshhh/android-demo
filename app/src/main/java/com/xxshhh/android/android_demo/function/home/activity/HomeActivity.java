@@ -21,7 +21,7 @@ import butterknife.BindView;
 
 /**
  * 首页界面
- * Created by xwh on 2017/9/14
+ * Created by xxshhh on 2017/9/14.
  */
 public class HomeActivity extends BaseActivity {
 
@@ -94,7 +94,6 @@ public class HomeActivity extends BaseActivity {
                     case R.id.nav_setting:
                         break;
                     default:
-                        break;
                 }
 
                 if (getSupportActionBar() != null) {

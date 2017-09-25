@@ -13,7 +13,7 @@ import butterknife.Unbinder;
 
 /**
  * 基类 fragment
- * Created by xwh on 2017/9/19
+ * Created by xxshhh on 2017/9/19.
  */
 public abstract class BaseFragment extends Fragment {
 

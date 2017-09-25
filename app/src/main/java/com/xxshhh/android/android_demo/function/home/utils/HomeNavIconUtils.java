@@ -9,7 +9,7 @@ import com.mikepenz.pixeden_7_stroke_typeface_library.Pixeden7Stroke;
 
 /**
  * 首页导航图标工具类
- * Created by xwh on 2017/9/15
+ * Created by xxshhh on 2017/9/15.
  */
 public class HomeNavIconUtils {
 
