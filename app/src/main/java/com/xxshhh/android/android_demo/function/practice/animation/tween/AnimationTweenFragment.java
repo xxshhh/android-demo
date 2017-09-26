@@ -293,12 +293,12 @@ public class AnimationTweenFragment extends BaseFragment {
         if (mFromDegreesView == null) {
             mFromDegreesView = new AnimationSeekBarView(getContext());
         }
-        mFromDegreesView.init("fromDegrees", 0, 1080, 0, 0);
+        mFromDegreesView.init("fromDegrees", 0, 1440, 0, 0);
 
         if (mToDegreesView == null) {
             mToDegreesView = new AnimationSeekBarView(getContext());
         }
-        mToDegreesView.init("toDegrees", 0, 1080, 360, 0);
+        mToDegreesView.init("toDegrees", 0, 1440, 360, 0);
 
         if (mPivotXRotateView == null) {
             mPivotXRotateView = new AnimationSeekBarView(getContext());
@@ -338,22 +338,22 @@ public class AnimationTweenFragment extends BaseFragment {
         if (mFromXScaleView == null) {
             mFromXScaleView = new AnimationSeekBarView(getContext());
         }
-        mFromXScaleView.init("fromXScale", 0, 3, 0, 2);
+        mFromXScaleView.init("fromXScale", 0, 2.5f, 0, 2);
 
         if (mToXScaleView == null) {
             mToXScaleView = new AnimationSeekBarView(getContext());
         }
-        mToXScaleView.init("toXScale", 0, 3, 2, 2);
+        mToXScaleView.init("toXScale", 0, 2.5f, 2, 2);
 
         if (mFromYScaleView == null) {
             mFromYScaleView = new AnimationSeekBarView(getContext());
         }
-        mFromYScaleView.init("fromYScale", 0, 3, 0, 2);
+        mFromYScaleView.init("fromYScale", 0, 2.5f, 0, 2);
 
         if (mToYScaleView == null) {
             mToYScaleView = new AnimationSeekBarView(getContext());
         }
-        mToYScaleView.init("toYScale", 0, 3, 2, 2);
+        mToYScaleView.init("toYScale", 0, 2.5f, 2, 2);
 
         if (mPivotXScaleView == null) {
             mPivotXScaleView = new AnimationSeekBarView(getContext());
