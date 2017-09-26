@@ -10,25 +10,25 @@ import com.xxshhh.android.android_demo.R;
 import com.xxshhh.android.android_demo.base.adapter.BaseAdapter;
 
 /**
- * 动画适配器
+ * Demo动画 adapter
  */
-public class AnimationAdapter extends BaseAdapter<String> {
+public class AnimationDemoAdapter extends BaseAdapter<String> {
 
-    public AnimationAdapter(Context context) {
+    public AnimationDemoAdapter(Context context) {
         super(context);
     }
 
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(mContext).inflate(R.layout.animation_item, parent, false);
-        return new AnimationViewHolder(view);
+        View view = LayoutInflater.from(mContext).inflate(R.layout.animation_demo_msg_item, parent, false);
+        return new AnimationDemoViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
         String data = mDataList.get(position);
-        if (holder instanceof AnimationViewHolder) {
-            ((AnimationViewHolder) holder).setData(data);
+        if (holder instanceof AnimationDemoViewHolder) {
+            ((AnimationDemoViewHolder) holder).setData(data);
         }
     }
 

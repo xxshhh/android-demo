@@ -23,7 +23,6 @@ import com.mikepenz.community_material_typeface_library.CommunityMaterial;
 import com.mikepenz.iconics.IconicsDrawable;
 import com.xxshhh.android.android_demo.R;
 import com.xxshhh.android.android_demo.base.fragment.BaseFragment;
-import com.xxshhh.android.android_demo.function.practice.animation.demo.AnimationAdapter;
 
 import butterknife.BindView;
 
@@ -44,7 +43,7 @@ public class AnimationDemoFragment extends BaseFragment {
     @BindView(R.id.rv_msg_list)
     RecyclerView mRvMsgList;
 
-    private AnimationAdapter mAdapter;
+    private AnimationDemoAdapter mAdapter;
 
     @Override
     protected int getLayoutResID() {
@@ -63,7 +62,7 @@ public class AnimationDemoFragment extends BaseFragment {
     }
 
     private void initMsgList() {
-        mAdapter = new AnimationAdapter(getContext());
+        mAdapter = new AnimationDemoAdapter(getContext());
         mRvMsgList.setLayoutManager(new LinearLayoutManager(getContext()));
         mRvMsgList.setItemAnimator(new DefaultItemAnimator());
         mRvMsgList.setHasFixedSize(true);
@@ -97,7 +96,7 @@ public class AnimationDemoFragment extends BaseFragment {
 
     private void insertMsg() {
         int size = mAdapter.getDataList().size();
-        String msg = size + getString(R.string.place_text);
+        String msg = getString(R.string.place_text) + size;
         mAdapter.getDataList().add(msg);
         mAdapter.notifyItemInserted(size);
         mRvMsgList.scrollToPosition(size);

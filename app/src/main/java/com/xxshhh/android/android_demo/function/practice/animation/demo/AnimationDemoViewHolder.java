@@ -4,11 +4,11 @@ import android.animation.Keyframe;
 import android.animation.ObjectAnimator;
 import android.animation.PropertyValuesHolder;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.View;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
 import android.view.animation.AnimationSet;
+import android.view.animation.BounceInterpolator;
 import android.view.animation.ScaleAnimation;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -19,16 +19,17 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 /**
+ * Demo动画 viewHolder
  * Created by xxshhh on 2017/9/20.
  */
-public class AnimationViewHolder extends RecyclerView.ViewHolder {
+public class AnimationDemoViewHolder extends RecyclerView.ViewHolder {
 
     @BindView(R.id.iv_avatar)
     ImageView mIvAvatar;
     @BindView(R.id.tv_msg)
     TextView mTvMsg;
 
-    public AnimationViewHolder(View itemView) {
+    public AnimationDemoViewHolder(View itemView) {
         super(itemView);
         ButterKnife.bind(this, itemView);
     }
@@ -36,7 +37,12 @@ public class AnimationViewHolder extends RecyclerView.ViewHolder {
     public void setData(String msg) {
         mTvMsg.setText(msg);
 
-        AnimationSet animationSet = new AnimationSet(true);
+        addAvatarAnimation();
+        addTvMsgAnimation();
+    }
+
+    private void addAvatarAnimation() {
+        AnimationSet animationSet = new AnimationSet(false);
 
         AlphaAnimation alphaAnimation = new AlphaAnimation(0, 1);
         alphaAnimation.setDuration(500);
@@ -45,36 +51,38 @@ public class AnimationViewHolder extends RecyclerView.ViewHolder {
                 Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0);
         scaleAnimation.setDuration(500);
 
+        ScaleAnimation bounceAnimation = new ScaleAnimation(0.9f, 1, 0.9f, 1,
+                Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
+        bounceAnimation.setInterpolator(new BounceInterpolator());
+        bounceAnimation.setStartOffset(400);
+        bounceAnimation.setDuration(1000);
+
         animationSet.addAnimation(alphaAnimation);
         animationSet.addAnimation(scaleAnimation);
+        animationSet.addAnimation(bounceAnimation);
         mIvAvatar.startAnimation(animationSet);
+    }
 
-        mIvAvatar.getAnimation().setAnimationListener(new Animation.AnimationListener() {
-            @Override
-            public void onAnimationStart(Animation animation) {
-                Log.e("TAG", "start");
-            }
+    private void addTvMsgAnimation() {
+        AnimationSet animationSet = new AnimationSet(false);
 
-            @Override
-            public void onAnimationEnd(Animation animation) {
-                Log.e("TAG", "end");
-                startShakeByPropertyAnim(mIvAvatar, 0.95f, 1.05f, 2f, 400);
-            }
+        AlphaAnimation alphaAnimation = new AlphaAnimation(0, 1);
+        alphaAnimation.setDuration(500);
 
-            @Override
-            public void onAnimationRepeat(Animation animation) {
-                Log.e("TAG", "repeat");
-            }
-        });
+        ScaleAnimation scaleAnimation = new ScaleAnimation(0, 1, 0, 1,
+                Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0);
+        scaleAnimation.setDuration(500);
 
-//        ScaleAnimation animation = new ScaleAnimation(0.95f, 1.0f, 0.95f, 1.0f);
-//        animation.setDuration(1000);
-//        animation.setRepeatCount(2);
-//        mIvAvatar.startAnimation(animation);
+        ScaleAnimation bounceAnimation = new ScaleAnimation(0.9f, 1, 0.9f, 1,
+                Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
+        bounceAnimation.setInterpolator(new BounceInterpolator());
+        bounceAnimation.setStartOffset(400);
+        bounceAnimation.setDuration(1000);
 
-//        startShakeByPropertyAnim(mIvAvatar, 0.9f, 1.1f, 5f, 1000);
-
-        mTvMsg.setAnimation(animationSet);
+        animationSet.addAnimation(alphaAnimation);
+        animationSet.addAnimation(scaleAnimation);
+        animationSet.addAnimation(bounceAnimation);
+        mTvMsg.startAnimation(animationSet);
     }
 
     private void startShakeByPropertyAnim(View view, float scaleSmall, float scaleLarge, float shakeDegrees, long duration) {
