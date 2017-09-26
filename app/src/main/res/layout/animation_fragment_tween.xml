@@ -87,6 +87,14 @@
                 android:singleLine="true"
                 android:text="Translate"/>
 
+            <RadioButton
+                android:id="@+id/rb_set"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:singleLine="true"
+                android:text="Set"/>
+
         </RadioGroup>
 
         <LinearLayout
@@ -110,6 +118,12 @@
                 android:layout_height="wrap_content"
                 android:switchPadding="5dp"
                 android:text="repeatMode"/>
+
+            <Spinner
+                android:id="@+id/sp_interpolator"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:entries="@array/animation_interpolator"/>
 
         </LinearLayout>
 

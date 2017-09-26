@@ -4,9 +4,23 @@ import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.IdRes;
 import android.support.annotation.Nullable;
+import android.support.v4.view.animation.FastOutLinearInInterpolator;
+import android.support.v4.view.animation.FastOutSlowInInterpolator;
+import android.support.v4.view.animation.LinearOutSlowInInterpolator;
 import android.view.View;
+import android.view.animation.AccelerateDecelerateInterpolator;
+import android.view.animation.AccelerateInterpolator;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
+import android.view.animation.AnimationSet;
+import android.view.animation.AnticipateInterpolator;
+import android.view.animation.AnticipateOvershootInterpolator;
+import android.view.animation.BounceInterpolator;
+import android.view.animation.CycleInterpolator;
+import android.view.animation.DecelerateInterpolator;
+import android.view.animation.Interpolator;
+import android.view.animation.LinearInterpolator;
+import android.view.animation.OvershootInterpolator;
 import android.view.animation.RotateAnimation;
 import android.view.animation.ScaleAnimation;
 import android.view.animation.TranslateAnimation;
@@ -15,6 +29,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+import android.widget.Spinner;
 import android.widget.Switch;
 
 import com.mikepenz.community_material_typeface_library.CommunityMaterial;
@@ -49,12 +64,16 @@ public class AnimationTweenFragment extends BaseFragment {
     RadioButton mRbScale;
     @BindView(R.id.rb_translate)
     RadioButton mRbTranslate;
+    @BindView(R.id.rb_set)
+    RadioButton mRbSet;
     @BindView(R.id.rg_tween)
     RadioGroup mRgTween;
     @BindView(R.id.sw_fillAfter)
     Switch mSwFillAfter;
     @BindView(R.id.sw_repeatMode)
     Switch mSwRepeatMode;
+    @BindView(R.id.sp_interpolator)
+    Spinner mSpInterpolator;
     @BindView(R.id.ll_container_common)
     LinearLayout mLlContainerCommon;
     @BindView(R.id.ll_container_individual)
@@ -65,18 +84,18 @@ public class AnimationTweenFragment extends BaseFragment {
     // alpha
     private AnimationSeekBarView mFromAlphaView;
     private AnimationSeekBarView mToAlphaView;
-
-    // rotate & scale
-    private AnimationSeekBarView mPivotXView;
-    private AnimationSeekBarView mPivotYView;
     // rotate
     private AnimationSeekBarView mFromDegreesView;
     private AnimationSeekBarView mToDegreesView;
+    private AnimationSeekBarView mPivotXRotateView;
+    private AnimationSeekBarView mPivotYRotateView;
     // scale
     private AnimationSeekBarView mFromXScaleView;
     private AnimationSeekBarView mToXScaleView;
     private AnimationSeekBarView mFromYScaleView;
     private AnimationSeekBarView mToYScaleView;
+    private AnimationSeekBarView mPivotXScaleView;
+    private AnimationSeekBarView mPivotYScaleView;
     // translate
     private AnimationSeekBarView mFromXDeltaView;
     private AnimationSeekBarView mToXDeltaView;
@@ -147,6 +166,9 @@ public class AnimationTweenFragment extends BaseFragment {
             case R.id.rb_translate:
                 animation = getTranslateAnimation();
                 break;
+            case R.id.rb_set:
+                animation = getSetAnimation();
+                break;
             default:
         }
         if (animation == null) {
@@ -159,13 +181,17 @@ public class AnimationTweenFragment extends BaseFragment {
 
         boolean fillAfter = mSwFillAfter.isChecked();
         boolean repeatMode = mSwRepeatMode.isChecked();
+        int interpolatorPos = mSpInterpolator.getSelectedItemPosition();
         long duration = (long) mDurationView.getValue();
+
         animation.setFillAfter(fillAfter);
         if (repeatMode) {
             animation.setRepeatCount(Animation.INFINITE);
             animation.setRepeatMode(Animation.INFINITE);
         }
+        animation.setInterpolator(getInterpolator(interpolatorPos));
         animation.setDuration(duration);
+
         mIvAvatar.startAnimation(animation);
     }
 
@@ -197,6 +223,7 @@ public class AnimationTweenFragment extends BaseFragment {
     private void resetContainerCommon() {
         mSwFillAfter.setChecked(false);
         mSwRepeatMode.setChecked(false);
+        mSpInterpolator.setSelection(0);
 
         if (mDurationView == null) {
             mDurationView = new AnimationSeekBarView(getContext());
@@ -219,6 +246,9 @@ public class AnimationTweenFragment extends BaseFragment {
                 break;
             case R.id.rb_translate:
                 views = getTranslateViews();
+                break;
+            case R.id.rb_set:
+                views = getSetViews();
                 break;
             default:
         }
@@ -270,36 +300,36 @@ public class AnimationTweenFragment extends BaseFragment {
         }
         mToDegreesView.init("toDegrees", 0, 1080, 360, 0);
 
-        if (mPivotXView == null) {
-            mPivotXView = new AnimationSeekBarView(getContext());
+        if (mPivotXRotateView == null) {
+            mPivotXRotateView = new AnimationSeekBarView(getContext());
         }
-        mPivotXView.init("pivotX", 0, 1, 0.5f, 2);
+        mPivotXRotateView.init("pivotXRotate", 0, 1, 0.5f, 2);
 
-        if (mPivotYView == null) {
-            mPivotYView = new AnimationSeekBarView(getContext());
+        if (mPivotYRotateView == null) {
+            mPivotYRotateView = new AnimationSeekBarView(getContext());
         }
-        mPivotYView.init("pivotY", 0, 1, 0.5f, 2);
+        mPivotYRotateView.init("pivotYRotate", 0, 1, 0.5f, 2);
 
         List<View> views = new ArrayList<>();
         views.add(mFromDegreesView.mView);
         views.add(mToDegreesView.mView);
-        views.add(mPivotXView.mView);
-        views.add(mPivotYView.mView);
+        views.add(mPivotXRotateView.mView);
+        views.add(mPivotYRotateView.mView);
         return views;
     }
 
     private Animation getRotateAnimation() {
         if (mFromDegreesView == null || mToDegreesView == null ||
-                mPivotXView == null || mPivotYView == null) {
+                mPivotXRotateView == null || mPivotYRotateView == null) {
             return null;
         }
 
         float fromDegrees = mFromDegreesView.getValue();
         float toDegrees = mToDegreesView.getValue();
         int pivotXType = Animation.RELATIVE_TO_SELF;
-        float pivotXValue = mPivotXView.getValue();
+        float pivotXValue = mPivotXRotateView.getValue();
         int pivotYType = Animation.RELATIVE_TO_SELF;
-        float pivotYValue = mPivotYView.getValue();
+        float pivotYValue = mPivotYRotateView.getValue();
         return new RotateAnimation(fromDegrees, toDegrees, pivotXType,
                 pivotXValue, pivotYType, pivotYValue);
     }
@@ -325,30 +355,30 @@ public class AnimationTweenFragment extends BaseFragment {
         }
         mToYScaleView.init("toYScale", 0, 3, 2, 2);
 
-        if (mPivotXView == null) {
-            mPivotXView = new AnimationSeekBarView(getContext());
+        if (mPivotXScaleView == null) {
+            mPivotXScaleView = new AnimationSeekBarView(getContext());
         }
-        mPivotXView.init("pivotX", 0, 1, 0.5f, 2);
+        mPivotXScaleView.init("pivotXScale", 0, 1, 0.5f, 2);
 
-        if (mPivotYView == null) {
-            mPivotYView = new AnimationSeekBarView(getContext());
+        if (mPivotYScaleView == null) {
+            mPivotYScaleView = new AnimationSeekBarView(getContext());
         }
-        mPivotYView.init("pivotY", 0, 1, 0.5f, 2);
+        mPivotYScaleView.init("pivotYScale", 0, 1, 0.5f, 2);
 
         List<View> views = new ArrayList<>();
         views.add(mFromXScaleView.mView);
         views.add(mToXScaleView.mView);
         views.add(mFromYScaleView.mView);
         views.add(mToYScaleView.mView);
-        views.add(mPivotXView.mView);
-        views.add(mPivotYView.mView);
+        views.add(mPivotXScaleView.mView);
+        views.add(mPivotYScaleView.mView);
         return views;
     }
 
     private Animation getScaleAnimation() {
         if (mFromXScaleView == null || mToXScaleView == null ||
                 mFromYScaleView == null || mToYScaleView == null ||
-                mPivotXView == null || mPivotYView == null) {
+                mPivotXScaleView == null || mPivotYScaleView == null) {
             return null;
         }
 
@@ -357,9 +387,9 @@ public class AnimationTweenFragment extends BaseFragment {
         float fromY = mFromYScaleView.getValue();
         float toY = mToYScaleView.getValue();
         int pivotXType = Animation.RELATIVE_TO_SELF;
-        float pivotXValue = mPivotXView.getValue();
+        float pivotXValue = mPivotXScaleView.getValue();
         int pivotYType = Animation.RELATIVE_TO_SELF;
-        float pivotYValue = mPivotYView.getValue();
+        float pivotYValue = mPivotYScaleView.getValue();
         return new ScaleAnimation(fromX, toX, fromY, toY,
                 pivotXType, pivotXValue, pivotYType, pivotYValue);
     }
@@ -409,6 +439,85 @@ public class AnimationTweenFragment extends BaseFragment {
         float toYValue = mToYDeltaView.getValue();
         return new TranslateAnimation(fromXType, fromXValue, toXType, toXValue,
                 fromYType, fromYValue, toYType, toYValue);
+    }
+
+    private List<View> getSetViews() {
+        List<View> views = new ArrayList<>();
+        views.addAll(getAlphaViews());
+        views.addAll(getRotateViews());
+        views.addAll(getScaleViews());
+        views.addAll(getTranslateViews());
+        return views;
+    }
+
+    private Animation getSetAnimation() {
+        Animation alphaAnimation = getAlphaAnimation();
+        if (alphaAnimation == null) {
+            return null;
+        }
+        Animation rotateAnimation = getRotateAnimation();
+        if (rotateAnimation == null) {
+            return null;
+        }
+        Animation scaleAnimation = getScaleAnimation();
+        if (scaleAnimation == null) {
+            return null;
+        }
+        Animation translateAnimation = getTranslateAnimation();
+        if (translateAnimation == null) {
+            return null;
+        }
+
+        AnimationSet animationSet = new AnimationSet(true);
+        animationSet.addAnimation(alphaAnimation);
+        animationSet.addAnimation(rotateAnimation);
+        animationSet.addAnimation(scaleAnimation);
+        animationSet.addAnimation(translateAnimation);
+        return animationSet;
+    }
+
+    private Interpolator getInterpolator(int pos) {
+        Interpolator interpolator = null;
+        switch (pos) {
+            case 0:
+                interpolator = new AccelerateDecelerateInterpolator();
+                break;
+            case 1:
+                interpolator = new AccelerateInterpolator();
+                break;
+            case 2:
+                interpolator = new AnticipateInterpolator();
+                break;
+            case 3:
+                interpolator = new AnticipateOvershootInterpolator();
+                break;
+            case 4:
+                interpolator = new BounceInterpolator();
+                break;
+            case 5:
+                interpolator = new CycleInterpolator(2);
+                break;
+            case 6:
+                interpolator = new DecelerateInterpolator();
+                break;
+            case 7:
+                interpolator = new FastOutLinearInInterpolator();
+                break;
+            case 8:
+                interpolator = new FastOutSlowInInterpolator();
+                break;
+            case 9:
+                interpolator = new LinearInterpolator();
+                break;
+            case 10:
+                interpolator = new LinearOutSlowInInterpolator();
+                break;
+            case 11:
+                interpolator = new OvershootInterpolator();
+                break;
+            default:
+        }
+        return interpolator;
     }
 
 }
