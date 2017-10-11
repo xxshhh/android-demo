@@ -54,8 +54,6 @@ public class AnimationTweenFragment extends BaseFragment {
     Button mBtnStart;
     @BindView(R.id.btn_stop)
     Button mBtnStop;
-    @BindView(R.id.btn_reset)
-    Button mBtnReset;
     @BindView(R.id.rb_alpha)
     RadioButton mRbAlpha;
     @BindView(R.id.rb_rotate)
@@ -70,7 +68,9 @@ public class AnimationTweenFragment extends BaseFragment {
     RadioGroup mRgTween;
     @BindView(R.id.sw_fillAfter)
     Switch mSwFillAfter;
-    @BindView(R.id.sw_repeatMode)
+    @BindView(R.id.sw_repeat)
+    Switch mSwRepeat;
+    @BindView(R.id.sw_repeat_mode)
     Switch mSwRepeatMode;
     @BindView(R.id.sp_interpolator)
     Spinner mSpInterpolator;
@@ -141,13 +141,6 @@ public class AnimationTweenFragment extends BaseFragment {
                 stopAnimation();
             }
         });
-
-        mBtnReset.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                resetAnimation();
-            }
-        });
     }
 
     private void startAnimation() {
@@ -175,19 +168,23 @@ public class AnimationTweenFragment extends BaseFragment {
             return;
         }
 
-        if (mSwFillAfter == null || mSwRepeatMode == null || mDurationView == null) {
+        if (mSwFillAfter == null || mSwRepeat == null || mSwRepeatMode == null ||
+                mSpInterpolator == null || mDurationView == null) {
             return;
         }
 
         boolean fillAfter = mSwFillAfter.isChecked();
+        boolean repeat = mSwRepeat.isChecked();
         boolean repeatMode = mSwRepeatMode.isChecked();
         int interpolatorPos = mSpInterpolator.getSelectedItemPosition();
         long duration = (long) mDurationView.getValue();
 
         animation.setFillAfter(fillAfter);
-        if (repeatMode) {
+        if (repeat) {
             animation.setRepeatCount(Animation.INFINITE);
-            animation.setRepeatMode(Animation.INFINITE);
+        }
+        if (repeatMode) {
+            animation.setRepeatMode(Animation.REVERSE);
         }
         animation.setInterpolator(getInterpolator(interpolatorPos));
         animation.setDuration(duration);
@@ -197,11 +194,6 @@ public class AnimationTweenFragment extends BaseFragment {
 
     private void stopAnimation() {
         mIvAvatar.clearAnimation();
-    }
-
-    private void resetAnimation() {
-        stopAnimation();
-        resetCheckedId(mRgTween.getCheckedRadioButtonId());
     }
 
     private void initRadioGroup() {
@@ -222,6 +214,7 @@ public class AnimationTweenFragment extends BaseFragment {
 
     private void resetContainerCommon() {
         mSwFillAfter.setChecked(false);
+        mSwRepeat.setChecked(false);
         mSwRepeatMode.setChecked(false);
         mSpInterpolator.setSelection(0);
 
