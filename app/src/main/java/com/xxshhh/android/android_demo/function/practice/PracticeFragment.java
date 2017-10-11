@@ -9,6 +9,7 @@ import com.xxshhh.android.android_demo.R;
 import com.xxshhh.android.android_demo.base.fragment.BaseFragment;
 import com.xxshhh.android.android_demo.common.activity.CommonContainerActivity;
 import com.xxshhh.android.android_demo.function.practice.animation.demo.AnimationDemoFragment;
+import com.xxshhh.android.android_demo.function.practice.animation.property.AnimationPropertyFragment;
 import com.xxshhh.android.android_demo.function.practice.animation.tween.AnimationTweenFragment;
 
 import butterknife.BindView;
@@ -19,6 +20,8 @@ import butterknife.BindView;
  */
 public class PracticeFragment extends BaseFragment {
 
+    @BindView(R.id.btn_animation_frame)
+    Button mBtnAnimationFrame;
     @BindView(R.id.btn_animation_tween)
     Button mBtnAnimationTween;
     @BindView(R.id.btn_animation_property)
@@ -42,17 +45,23 @@ public class PracticeFragment extends BaseFragment {
     }
 
     private void initAnimation() {
+        mBtnAnimationFrame.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+            }
+        });
+
         mBtnAnimationTween.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 CommonContainerActivity.start(getContext(), AnimationTweenFragment.class);
-
             }
         });
 
         mBtnAnimationProperty.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                CommonContainerActivity.start(getContext(), AnimationPropertyFragment.class);
             }
         });
 
