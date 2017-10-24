@@ -5,4 +5,7 @@
     <dimen name="nav_header_vertical_spacing">16dp</dimen>
     <dimen name="nav_header_height">160dp</dimen>
     <dimen name="fab_margin">16dp</dimen>
+
+    <dimen name="animation_demo_circle_size">25dp</dimen>
+    <dimen name="animation_demo_rect_round_size">20dp</dimen>
 </resources>

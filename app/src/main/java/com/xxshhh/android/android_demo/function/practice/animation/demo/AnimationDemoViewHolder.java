@@ -1,16 +1,21 @@
 package com.xxshhh.android.android_demo.function.practice.animation.demo;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
 import android.animation.Keyframe;
 import android.animation.ObjectAnimator;
 import android.animation.PropertyValuesHolder;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
+import android.view.ViewTreeObserver;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
 import android.view.animation.AnimationSet;
 import android.view.animation.BounceInterpolator;
+import android.view.animation.RotateAnimation;
 import android.view.animation.ScaleAnimation;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.xxshhh.android.android_demo.R;
@@ -24,8 +29,12 @@ import butterknife.ButterKnife;
  */
 public class AnimationDemoViewHolder extends RecyclerView.ViewHolder {
 
+    @BindView(R.id.rl_root)
+    RelativeLayout mRlRoot;
     @BindView(R.id.iv_avatar)
     ImageView mIvAvatar;
+    @BindView(R.id.cfl_container)
+    AnimationDemoCustomFrameLayout mCflContainer;
     @BindView(R.id.tv_msg)
     TextView mTvMsg;
 
@@ -37,13 +46,21 @@ public class AnimationDemoViewHolder extends RecyclerView.ViewHolder {
     public void setData(String msg) {
         mTvMsg.setText(msg);
 
-        addAvatarAnimation();
-        addTvMsgAnimation();
+        setupAnimation();
+    }
+
+    private void setupAnimation() {
+        mRlRoot.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+            @Override
+            public void onGlobalLayout() {
+                addAvatarAnimation();
+                addTvMsgAnimation();
+                mRlRoot.getViewTreeObserver().removeGlobalOnLayoutListener(this);
+            }
+        });
     }
 
     private void addAvatarAnimation() {
-        AnimationSet animationSet = new AnimationSet(false);
-
         AlphaAnimation alphaAnimation = new AlphaAnimation(0, 1);
         alphaAnimation.setDuration(500);
 
@@ -57,6 +74,7 @@ public class AnimationDemoViewHolder extends RecyclerView.ViewHolder {
         bounceAnimation.setStartOffset(400);
         bounceAnimation.setDuration(1000);
 
+        AnimationSet animationSet = new AnimationSet(false);
         animationSet.addAnimation(alphaAnimation);
         animationSet.addAnimation(scaleAnimation);
         animationSet.addAnimation(bounceAnimation);
@@ -64,67 +82,75 @@ public class AnimationDemoViewHolder extends RecyclerView.ViewHolder {
     }
 
     private void addTvMsgAnimation() {
-        AnimationSet animationSet = new AnimationSet(false);
+        // 1.1裁剪
+        mCflContainer.setAnimatorListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationStart(Animator animation) {
+                super.onAnimationStart(animation);
+                // 1.2旋转
+                addTvMsgRotateAnimation();
+            }
 
-        AlphaAnimation alphaAnimation = new AlphaAnimation(0, 1);
-        alphaAnimation.setDuration(500);
-
-        ScaleAnimation scaleAnimation = new ScaleAnimation(0, 1, 0, 1,
-                Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0);
-        scaleAnimation.setDuration(500);
-
-        ScaleAnimation bounceAnimation = new ScaleAnimation(0.9f, 1, 0.9f, 1,
-                Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
-        bounceAnimation.setInterpolator(new BounceInterpolator());
-        bounceAnimation.setStartOffset(400);
-        bounceAnimation.setDuration(1000);
-
-        animationSet.addAnimation(alphaAnimation);
-        animationSet.addAnimation(scaleAnimation);
-        animationSet.addAnimation(bounceAnimation);
-        mTvMsg.startAnimation(animationSet);
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                super.onAnimationEnd(animation);
+                // 2.抖动
+                addTvMsgShakeAnimation();
+            }
+        });
+        mCflContainer.startAnimation();
     }
 
-    private void startShakeByPropertyAnim(View view, float scaleSmall, float scaleLarge, float shakeDegrees, long duration) {
-        if (view == null) {
-            return;
-        }
-        //TODO 验证参数的有效性
+    private void addTvMsgShakeAnimation() {
+        long totalTime = (3 + 5 + 9) * 40;
+        float k1 = 0f;
+        float k2 = 3.0f / 17.0f;
+        float k3 = 5.0f / 17.0f;
+        float k4 = 1f;
 
-        //先变小后变大
-        PropertyValuesHolder scaleXValuesHolder = PropertyValuesHolder.ofKeyframe(View.SCALE_X,
-                Keyframe.ofFloat(0f, 1.0f),
-                Keyframe.ofFloat(0.25f, scaleSmall),
-                Keyframe.ofFloat(0.5f, scaleLarge),
-                Keyframe.ofFloat(0.75f, scaleLarge),
-                Keyframe.ofFloat(1.0f, 1.0f)
-        );
-        PropertyValuesHolder scaleYValuesHolder = PropertyValuesHolder.ofKeyframe(View.SCALE_Y,
-                Keyframe.ofFloat(0f, 1.0f),
-                Keyframe.ofFloat(0.25f, scaleSmall),
-                Keyframe.ofFloat(0.5f, scaleLarge),
-                Keyframe.ofFloat(0.75f, scaleLarge),
-                Keyframe.ofFloat(1.0f, 1.0f)
-        );
+        int width = mTvMsg.getWidth();
+        int height = mTvMsg.getHeight();
 
-        //先往左再往右
-        PropertyValuesHolder rotateValuesHolder = PropertyValuesHolder.ofKeyframe(View.ROTATION,
-                Keyframe.ofFloat(0f, 0f),
-                Keyframe.ofFloat(0.1f, -shakeDegrees),
-                Keyframe.ofFloat(0.2f, shakeDegrees),
-                Keyframe.ofFloat(0.3f, -shakeDegrees),
-                Keyframe.ofFloat(0.4f, shakeDegrees),
-                Keyframe.ofFloat(0.5f, -shakeDegrees),
-                Keyframe.ofFloat(0.6f, shakeDegrees),
-                Keyframe.ofFloat(0.7f, -shakeDegrees),
-                Keyframe.ofFloat(0.8f, shakeDegrees),
-                Keyframe.ofFloat(0.9f, -shakeDegrees),
-                Keyframe.ofFloat(1.0f, 0f)
-        );
+        float kx = 0.00257692f * width;
+        float sx1 = 1 + kx * 0.1f;
+        float sx2 = 1 - kx * 0.07f;
+        float sx3 = 1 + kx * 0.04f;
+        float sx4 = 1f;
 
-        ObjectAnimator objectAnimator = ObjectAnimator.ofPropertyValuesHolder(view, scaleXValuesHolder, scaleYValuesHolder, rotateValuesHolder);
-        objectAnimator.setDuration(duration);
+        float ky = 0.00932836f * height;
+        float sy1 = 1 - ky * 0.08f;
+        float sy2 = 1 + ky * 0.03f;
+        float sy3 = 1 - ky * 0.01f;
+        float sy4 = 1f;
+
+        PropertyValuesHolder pvhScaleX = PropertyValuesHolder.ofKeyframe(View.SCALE_X,
+                Keyframe.ofFloat(k1, sx1),
+                Keyframe.ofFloat(k2, sx2),
+                Keyframe.ofFloat(k3, sx3),
+                Keyframe.ofFloat(k4, sx4));
+
+        PropertyValuesHolder pvhScaleY = PropertyValuesHolder.ofKeyframe(View.SCALE_Y,
+                Keyframe.ofFloat(k1, sy1),
+                Keyframe.ofFloat(k2, sy2),
+                Keyframe.ofFloat(k3, sy3),
+                Keyframe.ofFloat(k4, sy4));
+
+        ObjectAnimator objectAnimator = ObjectAnimator.ofPropertyValuesHolder(mTvMsg, pvhScaleX, pvhScaleY);
+        objectAnimator.setDuration(totalTime);
         objectAnimator.start();
+    }
+
+    private void addTvMsgRotateAnimation() {
+        AlphaAnimation alphaAnimation = new AlphaAnimation(0, 1);
+        alphaAnimation.setDuration(1000);
+
+        RotateAnimation rotateAnimation = new RotateAnimation(-5, 0);
+        rotateAnimation.setDuration(1000);
+
+        AnimationSet animationSet = new AnimationSet(false);
+        animationSet.addAnimation(alphaAnimation);
+        animationSet.addAnimation(rotateAnimation);
+        mTvMsg.startAnimation(animationSet);
     }
 
 }

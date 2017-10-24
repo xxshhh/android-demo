@@ -88,8 +88,10 @@ public class AnimationDemoFragment extends BaseFragment {
             @Override
             public void onClick(View v) {
                 int size = mAdapter.getDataList().size();
-                mAdapter.getDataList().remove(size - 1);
-                mAdapter.notifyItemRemoved(size - 1);
+                if (size > 0) {
+                    mAdapter.getDataList().remove(size - 1);
+                    mAdapter.notifyItemRemoved(size - 1);
+                }
             }
         });
     }
@@ -105,7 +107,7 @@ public class AnimationDemoFragment extends BaseFragment {
     private void startCircleAnimation(View startView, View endView) {
         Drawable drawable = new IconicsDrawable(getContext())
                 .icon(CommunityMaterial.Icon.cmd_circle)
-                .sizeDp(22)
+                .sizeRes(R.dimen.animation_demo_circle_size)
                 .color(Color.parseColor("#38adff"));
         final ImageView circle = new ImageView(getContext());
         circle.setImageDrawable(drawable);
