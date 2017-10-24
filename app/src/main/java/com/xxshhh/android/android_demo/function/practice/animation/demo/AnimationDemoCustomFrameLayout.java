@@ -71,7 +71,7 @@ public class AnimationDemoCustomFrameLayout extends FrameLayout {
         final float maxRadiusY = centerY;
 
         ValueAnimator valueAnimator = ValueAnimator.ofFloat(0, 1);
-        valueAnimator.setDuration(1000);
+        valueAnimator.setDuration(8*40);
         valueAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
             @Override
             public void onAnimationUpdate(ValueAnimator animation) {

@@ -62,17 +62,17 @@ public class AnimationDemoViewHolder extends RecyclerView.ViewHolder {
 
     private void addAvatarAnimation() {
         AlphaAnimation alphaAnimation = new AlphaAnimation(0, 1);
-        alphaAnimation.setDuration(500);
+        alphaAnimation.setDuration(8 * 40);
 
         ScaleAnimation scaleAnimation = new ScaleAnimation(0, 1, 0, 1,
                 Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0);
-        scaleAnimation.setDuration(500);
+        scaleAnimation.setDuration(8 * 40);
 
-        ScaleAnimation bounceAnimation = new ScaleAnimation(0.9f, 1, 0.9f, 1,
+        ScaleAnimation bounceAnimation = new ScaleAnimation(0.85f, 1, 0.85f, 1,
                 Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
         bounceAnimation.setInterpolator(new BounceInterpolator());
-        bounceAnimation.setStartOffset(400);
-        bounceAnimation.setDuration(1000);
+        bounceAnimation.setStartOffset(40);
+        bounceAnimation.setDuration(18 * 40);
 
         AnimationSet animationSet = new AnimationSet(false);
         animationSet.addAnimation(alphaAnimation);
@@ -102,25 +102,20 @@ public class AnimationDemoViewHolder extends RecyclerView.ViewHolder {
     }
 
     private void addTvMsgShakeAnimation() {
-        long totalTime = (3 + 5 + 9) * 40;
+        long totalTime = 17 * 40;
         float k1 = 0f;
         float k2 = 3.0f / 17.0f;
         float k3 = 5.0f / 17.0f;
         float k4 = 1f;
 
-        int width = mTvMsg.getWidth();
-        int height = mTvMsg.getHeight();
-
-        float kx = 0.00257692f * width;
-        float sx1 = 1 + kx * 0.1f;
-        float sx2 = 1 - kx * 0.07f;
-        float sx3 = 1 + kx * 0.04f;
+        float sx1 = 1 + 0.1f;
+        float sx2 = 1 - 0.07f;
+        float sx3 = 1 + 0.04f;
         float sx4 = 1f;
 
-        float ky = 0.00932836f * height;
-        float sy1 = 1 - ky * 0.08f;
-        float sy2 = 1 + ky * 0.03f;
-        float sy3 = 1 - ky * 0.01f;
+        float sy1 = 1 - 0.08f;
+        float sy2 = 1 + 0.03f;
+        float sy3 = 1 - 0.01f;
         float sy4 = 1f;
 
         PropertyValuesHolder pvhScaleX = PropertyValuesHolder.ofKeyframe(View.SCALE_X,
@@ -142,10 +137,10 @@ public class AnimationDemoViewHolder extends RecyclerView.ViewHolder {
 
     private void addTvMsgRotateAnimation() {
         AlphaAnimation alphaAnimation = new AlphaAnimation(0, 1);
-        alphaAnimation.setDuration(1000);
+        alphaAnimation.setDuration(8 * 40);
 
         RotateAnimation rotateAnimation = new RotateAnimation(-5, 0);
-        rotateAnimation.setDuration(1000);
+        rotateAnimation.setDuration(8 * 40);
 
         AnimationSet animationSet = new AnimationSet(false);
         animationSet.addAnimation(alphaAnimation);
