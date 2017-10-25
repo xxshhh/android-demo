@@ -17,7 +17,7 @@
         android:scaleType="fitXY"
         android:src="@drawable/animation_demo_default_avatar"/>
 
-    <com.xxshhh.android.android_demo.function.practice.animation.demo.AnimationDemoCustomFrameLayout
+    <com.xxshhh.android.android_demo.function.practice.animation.demo.animation.AnimationRevealFrameLayout
         android:id="@+id/cfl_container"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -38,6 +38,6 @@
             android:textSize="16dp"
             tools:text="@string/place_text"/>
 
-    </com.xxshhh.android.android_demo.function.practice.animation.demo.AnimationDemoCustomFrameLayout>
+    </com.xxshhh.android.android_demo.function.practice.animation.demo.animation.AnimationRevealFrameLayout>
 
 </RelativeLayout>

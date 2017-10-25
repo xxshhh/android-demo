@@ -1,4 +1,4 @@
-package com.xxshhh.android.android_demo.function.practice.animation.demo;
+package com.xxshhh.android.android_demo.function.practice.animation.demo.animation;
 
 import android.animation.Animator;
 import android.animation.ValueAnimator;
@@ -15,27 +15,27 @@ import android.widget.FrameLayout;
 import com.xxshhh.android.android_demo.R;
 
 /**
- * Demo动画自定义容器
+ * 揭露动画容器
  * Created by xxshhh on 2017/10/23.
  */
-public class AnimationDemoCustomFrameLayout extends FrameLayout {
+public class AnimationRevealFrameLayout extends FrameLayout implements AnimationRevealInterface {
 
     private Path mPath; //路径
     private RectF mRectF; //矩形
     private float mRound; //矩形圆角
 
-    private boolean mStartAnimation; //是否播放动画
+    private boolean mIsClip; //是否裁剪，即播放动画
     private Animator.AnimatorListener mAnimatorListener; //动画回调
 
-    public AnimationDemoCustomFrameLayout(@NonNull Context context) {
+    public AnimationRevealFrameLayout(@NonNull Context context) {
         this(context, null);
     }
 
-    public AnimationDemoCustomFrameLayout(@NonNull Context context, @Nullable AttributeSet attrs) {
+    public AnimationRevealFrameLayout(@NonNull Context context, @Nullable AttributeSet attrs) {
         this(context, attrs, 0);
     }
 
-    public AnimationDemoCustomFrameLayout(@NonNull Context context, @Nullable AttributeSet attrs, @AttrRes int defStyleAttr) {
+    public AnimationRevealFrameLayout(@NonNull Context context, @Nullable AttributeSet attrs, @AttrRes int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         setWillNotDraw(false); //加上这句ViewGroup才会调用onDraw
         init();
@@ -50,28 +50,35 @@ public class AnimationDemoCustomFrameLayout extends FrameLayout {
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
-        if (mStartAnimation) {
+
+        if (mIsClip) {
+            mIsClip = false;
             mPath.reset();
             mPath.addRoundRect(mRectF, mRound, mRound, Path.Direction.CW);
             canvas.clipPath(mPath);
         }
     }
 
-    public void setAnimatorListener(Animator.AnimatorListener animatorListener) {
-        mAnimatorListener = animatorListener;
+    @Override
+    public void setRevealListener(Animator.AnimatorListener listener) {
+        mAnimatorListener = listener;
     }
 
-    public void startAnimation() {
-        mStartAnimation = true;
-
-        final float centerX = getMeasuredWidth() / 2.0f;
-        final float centerY = getMeasuredHeight() / 2.0f;
+    @Override
+    public void startRevealAnimation() {
+        int measuredWidth = getMeasuredWidth();
+        int measuredHeight = getMeasuredHeight();
+        if (measuredWidth == 0 || measuredHeight == 0) {
+            return;
+        }
+        final float centerX = measuredWidth / 2f;
+        final float centerY = measuredHeight / 2f;
         final int minRadius = getResources().getDimensionPixelOffset(R.dimen.animation_demo_circle_size) / 2;
         final float maxRadiusX = centerX;
         final float maxRadiusY = centerY;
 
         ValueAnimator valueAnimator = ValueAnimator.ofFloat(0, 1);
-        valueAnimator.setDuration(8*40);
+        valueAnimator.setDuration(8 * 40);
         valueAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
             @Override
             public void onAnimationUpdate(ValueAnimator animation) {
@@ -86,6 +93,7 @@ public class AnimationDemoCustomFrameLayout extends FrameLayout {
                 float bottom = centerY + marginY;
                 mRectF = new RectF(left, top, right, bottom);
 
+                mIsClip = true;
                 invalidate();
             }
         });
