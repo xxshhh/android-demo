@@ -27,19 +27,49 @@ import com.xxshhh.android.android_demo.R;
  */
 public class AnimationMsgManager {
 
-    public static void startAnimation(Context context, final ViewGroup parentView,
-                                      float startX, float startY, float toX, float toY,
+    interface AnimationMsgCallBack {
+        void onEnd();
+    }
+
+    public static void startAnimation(Context context, final ViewGroup parentView, View startView, View endView,
                                       final View itemView, final AnimationRevealFrameLayout revealFrameLayout, final ImageView imageView) {
         // 播放发送动画
+        addSendAnimation(context, parentView, startView, endView, new AnimationMsgCallBack() {
+            @Override
+            public void onEnd() {
+                // 播放消息动画
+                addMsgAnimation(itemView, revealFrameLayout, imageView);
+            }
+        });
+    }
+
+    private static void addSendAnimation(Context context, final ViewGroup parentView, View startView, View endView, final AnimationMsgCallBack callBack) {
         // 创建一个小球并加到父容器中
         final ImageView circleView = new ImageView(context);
         circleView.setImageResource(R.drawable.animation_demo_circle);
         parentView.addView(circleView);
 
+        // 计算小球起点和终点
+        int[] parentLoc = new int[2];
+        parentView.getLocationInWindow(parentLoc);
+        int[] startLoc = new int[2];
+        startView.getLocationInWindow(startLoc);
+        int[] endLoc = new int[2];
+        endView.getLocationInWindow(endLoc);
+        int radius = context.getResources().getDimensionPixelOffset(R.dimen.animation_demo_circle_size) / 2;
+        startLoc[0] += startView.getWidth() / 2 - parentLoc[0] - radius;
+        startLoc[1] += startView.getHeight() / 2 - parentLoc[1] - radius;
+        endLoc[0] += endView.getWidth() / 2 - parentLoc[0] - radius;
+        endLoc[1] += endView.getHeight() / 2 - parentLoc[1] - radius;
+        float startX = startLoc[0];
+        float startY = startLoc[1];
+        float endX = endLoc[0];
+        float endY = endLoc[1];
+
         // 设置小球运动轨迹
         Path path = new Path();
         path.moveTo(startX, startY);
-        path.quadTo(startX, (startY + toY) / 2, toX, toY);
+        path.quadTo(startX, (startY + endY) / 2, endX, endY);
 
         // 播放动画
         final PathMeasure pathMeasure = new PathMeasure(path, false);
@@ -59,14 +89,13 @@ public class AnimationMsgManager {
             @Override
             public void onAnimationEnd(Animator animation) {
                 parentView.removeView(circleView);
-                // 播放消息动画
-                startInsertAction(itemView, revealFrameLayout, imageView);
+                callBack.onEnd();
             }
         });
         valueAnimator.start();
     }
 
-    private static void startInsertAction(View itemView, AnimationRevealFrameLayout revealFrameLayout, ImageView imageView) {
+    private static void addMsgAnimation(View itemView, AnimationRevealFrameLayout revealFrameLayout, ImageView imageView) {
         itemView.setVisibility(View.VISIBLE);
         addTvMsgAnimation(revealFrameLayout);
         addAvatarAnimation(imageView);

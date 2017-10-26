@@ -66,6 +66,8 @@ public class AnimationDemoFragment extends BaseFragment {
             @Override
             public void onClick(View v) {
                 insertMsg();
+                // 播放动画
+                startAnimation();
             }
         });
 
@@ -83,8 +85,6 @@ public class AnimationDemoFragment extends BaseFragment {
         mAdapter.getDataList().add(msg);
         mAdapter.notifyItemInserted(size);
         mRvMsgList.scrollToPosition(size);
-
-        startAnimation();
     }
 
     private void removeMsg() {
@@ -96,40 +96,19 @@ public class AnimationDemoFragment extends BaseFragment {
     }
 
     private void startAnimation() {
-        int[] startLoc = getStartLoc();
-        int[] toLoc = getToLoc();
-
-        View itemView = findLastVisibleItemView();
-
-        if (itemView != null) {
-            itemView.setVisibility(View.GONE);
-            AnimationRevealFrameLayout revealFrameLayout = (AnimationRevealFrameLayout) itemView.findViewById(R.id.cfl_container);
-            ImageView imageView = (ImageView) itemView.findViewById(R.id.iv_avatar);
-            AnimationMsgManager.startAnimation(getContext(), mRlRoot,
-                    startLoc[0], startLoc[1], toLoc[0], toLoc[1],
-                    itemView, revealFrameLayout, imageView);
-        }
-    }
-
-    private int[] getStartLoc() {
-        int[] startLoc = new int[2];
-        mBtnAdd.getLocationInWindow(startLoc);
-        startLoc[0] += mBtnAdd.getWidth() / 2;
-        startLoc[1] += mBtnAdd.getHeight() / 2;
-        return startLoc;
-    }
-
-    private int[] getToLoc() {
-        int[] toLoc = new int[2];
-
-        View itemView = findLastVisibleItemView();
-        if (itemView != null) {
-            AnimationRevealFrameLayout revealFrameLayout = (AnimationRevealFrameLayout) itemView.findViewById(R.id.cfl_container);
-            revealFrameLayout.getLocationInWindow(toLoc);
-            toLoc[0] += revealFrameLayout.getWidth() / 2;
-            toLoc[1] += revealFrameLayout.getHeight() / 2;
-        }
-        return toLoc;
+        mRvMsgList.post(new Runnable() {
+            @Override
+            public void run() {
+                View itemView = findLastVisibleItemView();
+                if (itemView != null) {
+                    itemView.setVisibility(View.GONE);
+                    AnimationRevealFrameLayout revealFrameLayout = (AnimationRevealFrameLayout) itemView.findViewById(R.id.cfl_container);
+                    ImageView imageView = (ImageView) itemView.findViewById(R.id.iv_avatar);
+                    AnimationMsgManager.startAnimation(getContext(), mRlRoot, mBtnAdd, revealFrameLayout,
+                            itemView, revealFrameLayout, imageView);
+                }
+            }
+        });
     }
 
     private View findLastVisibleItemView() {
