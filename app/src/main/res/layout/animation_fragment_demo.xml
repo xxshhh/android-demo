@@ -17,7 +17,14 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="添加"/>
+            android:text="单加"/>
+
+        <Button
+            android:id="@+id/btn_multi_add"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="多加"/>
 
         <Button
             android:id="@+id/btn_remove"
@@ -26,12 +33,26 @@
             android:layout_weight="1"
             android:text="删除"/>
 
+        <Button
+            android:id="@+id/btn_clean"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="清除"/>
+
     </LinearLayout>
 
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/rv_msg_list"
+    <RelativeLayout
+        android:id="@+id/rl_content"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_above="@+id/ll_bottom"/>
+        android:layout_above="@+id/ll_bottom">
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/rv_msg_list"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
+
+    </RelativeLayout>
 
 </RelativeLayout>

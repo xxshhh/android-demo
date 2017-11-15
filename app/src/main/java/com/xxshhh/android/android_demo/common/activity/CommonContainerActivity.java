@@ -23,6 +23,7 @@ public class CommonContainerActivity extends BaseActivity {
 
     private static final String KEY_FRAGMENT_NAME = "fragment_name";
     private static final String KEY_FRAGMENT_BUNDLE = "fragment_bundle";
+    private Fragment mCurrentFragment;
 
     /**
      * 跳转到通用容器界面
@@ -67,12 +68,19 @@ public class CommonContainerActivity extends BaseActivity {
         String className = getIntent().getStringExtra(KEY_FRAGMENT_NAME);
         Bundle bundle = getIntent().getBundleExtra(KEY_FRAGMENT_BUNDLE);
         try {
-            Fragment fragment = (Fragment) Class.forName(className).newInstance();
-            fragment.setArguments(bundle);
-            getSupportFragmentManager().beginTransaction().replace(R.id.fl_container, fragment).commit();
+            mCurrentFragment = (Fragment) Class.forName(className).newInstance();
+            mCurrentFragment.setArguments(bundle);
+            getSupportFragmentManager().beginTransaction().replace(R.id.fl_container, mCurrentFragment).commit();
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    /**
+     * 获取当前Fragment
+     */
+    public Fragment getCurrentFragment() {
+        return mCurrentFragment;
     }
 
 }

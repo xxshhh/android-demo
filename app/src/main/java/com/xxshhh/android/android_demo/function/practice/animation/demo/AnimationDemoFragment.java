@@ -2,19 +2,22 @@ package com.xxshhh.android.android_demo.function.practice.animation.demo;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
 import com.xxshhh.android.android_demo.R;
 import com.xxshhh.android.android_demo.base.fragment.BaseFragment;
-import com.xxshhh.android.android_demo.function.practice.animation.demo.animation.AnimationMsgManager;
-import com.xxshhh.android.android_demo.function.practice.animation.demo.animation.AnimationRevealFrameLayout;
+import com.xxshhh.android.android_demo.function.practice.animation.demo.msg.callback.IMsgAnimationCallback;
+import com.xxshhh.android.android_demo.function.practice.animation.demo.msg.list.adapter.MsgAnimationAdapter;
+import com.xxshhh.android.android_demo.function.practice.animation.demo.msg.list.recyclerView.MsgAnimationItemAnimator;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.BindView;
 
@@ -22,20 +25,28 @@ import butterknife.BindView;
  * Demo动画界面
  * Created by xxshhh on 2017/9/19.
  */
-public class AnimationDemoFragment extends BaseFragment {
+public class AnimationDemoFragment extends BaseFragment
+        implements IMsgAnimationCallback {
 
-    @BindView(R.id.rl_root)
-    RelativeLayout mRlRoot;
+
     @BindView(R.id.btn_add)
     Button mBtnAdd;
+    @BindView(R.id.btn_multi_add)
+    Button mBtnMultiAdd;
     @BindView(R.id.btn_remove)
     Button mBtnRemove;
+    @BindView(R.id.btn_clean)
+    Button mBtnClean;
     @BindView(R.id.ll_bottom)
     LinearLayout mLlBottom;
     @BindView(R.id.rv_msg_list)
     RecyclerView mRvMsgList;
+    @BindView(R.id.rl_content)
+    RelativeLayout mRlContent;
+    @BindView(R.id.rl_root)
+    RelativeLayout mRlRoot;
 
-    private AnimationDemoAdapter mAdapter;
+    private MsgAnimationAdapter mAdapter;
 
     @Override
     protected int getLayoutResID() {
@@ -50,24 +61,29 @@ public class AnimationDemoFragment extends BaseFragment {
 
     private void init() {
         initMsgList();
-        initSendButton();
+        initActionButton();
     }
 
     private void initMsgList() {
-        mAdapter = new AnimationDemoAdapter(getContext());
+        mAdapter = new MsgAnimationAdapter(getContext());
         mRvMsgList.setLayoutManager(new LinearLayoutManager(getContext()));
-        mRvMsgList.setItemAnimator(new DefaultItemAnimator());
+        mRvMsgList.setItemAnimator(new MsgAnimationItemAnimator());
         mRvMsgList.setHasFixedSize(true);
         mRvMsgList.setAdapter(mAdapter);
     }
 
-    private void initSendButton() {
+    private void initActionButton() {
         mBtnAdd.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 insertMsg();
-                // 播放动画
-                startAnimation();
+            }
+        });
+
+        mBtnMultiAdd.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                insertMultiMsg(9);
             }
         });
 
@@ -77,14 +93,29 @@ public class AnimationDemoFragment extends BaseFragment {
                 removeMsg();
             }
         });
+
+        mBtnClean.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                cleanMsg();
+            }
+        });
     }
 
     private void insertMsg() {
-        int size = mAdapter.getDataList().size();
-        String msg = getString(R.string.place_text) + size;
-        mAdapter.getDataList().add(msg);
-        mAdapter.notifyItemInserted(size);
-        mRvMsgList.scrollToPosition(size);
+        insertMultiMsg(1);
+    }
+
+    private void insertMultiMsg(int count) {
+        int size = mAdapter.getItemCount();
+        List<String> msgs = new ArrayList<>();
+        for (int i = 0; i < count; i++) {
+            int position = size + count;
+            msgs.add(getString(R.string.place_text) + position);
+        }
+        mAdapter.getDataList().addAll(msgs);
+        mAdapter.notifyItemRangeInserted(size, count);
+        mRvMsgList.scrollToPosition(size + count - 1);
     }
 
     private void removeMsg() {
@@ -95,26 +126,18 @@ public class AnimationDemoFragment extends BaseFragment {
         }
     }
 
-    private void startAnimation() {
-        mRvMsgList.post(new Runnable() {
-            @Override
-            public void run() {
-                View itemView = findLastVisibleItemView();
-                if (itemView != null) {
-                    itemView.setVisibility(View.GONE);
-                    AnimationRevealFrameLayout revealFrameLayout = (AnimationRevealFrameLayout) itemView.findViewById(R.id.cfl_container);
-                    ImageView imageView = (ImageView) itemView.findViewById(R.id.iv_avatar);
-                    AnimationMsgManager.startAnimation(getContext(), mRlRoot, mBtnAdd, revealFrameLayout,
-                            itemView, revealFrameLayout, imageView);
-                }
-            }
-        });
+    private void cleanMsg() {
+        mAdapter.getDataList().clear();
+        mAdapter.notifyDataSetChanged();
     }
 
-    private View findLastVisibleItemView() {
-        LinearLayoutManager linearLayoutManager = (LinearLayoutManager) mRvMsgList.getLayoutManager();
-        int lastPosition = linearLayoutManager.findLastVisibleItemPosition();
-        return linearLayoutManager.findViewByPosition(lastPosition);
+    @Override
+    public ViewGroup getAnimationParentView() {
+        return mRlContent;
     }
 
+    @Override
+    public View getAnimationBottomView() {
+        return mLlBottom;
+    }
 }

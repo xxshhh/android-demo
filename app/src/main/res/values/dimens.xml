@@ -6,6 +6,9 @@
     <dimen name="nav_header_height">160dp</dimen>
     <dimen name="fab_margin">16dp</dimen>
 
-    <dimen name="animation_demo_circle_size">25dp</dimen>
-    <dimen name="animation_demo_rect_round_size">20dp</dimen>
+    <dimen name="animation_circle_diameter_size">25dp</dimen>
+    <dimen name="animation_circle_fall_height_size">10dp</dimen>
+    <dimen name="animation_rect_round_size">20dp</dimen>
+    <dimen name="animation_param_vx">250dp</dimen>
+    <dimen name="animation_param_g">3000dp</dimen>
 </resources>
