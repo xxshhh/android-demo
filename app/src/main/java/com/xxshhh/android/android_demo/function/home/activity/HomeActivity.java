@@ -105,6 +105,7 @@ public class HomeActivity extends BaseActivity {
                 return true;
             }
         });
+        switchPractice(); // 此处默认切换到官方实践
     }
 
     private void replaceFragment(Fragment fragment) {

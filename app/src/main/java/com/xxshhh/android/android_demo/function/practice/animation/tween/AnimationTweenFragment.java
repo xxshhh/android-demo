@@ -19,6 +19,7 @@ import android.view.animation.BounceInterpolator;
 import android.view.animation.CycleInterpolator;
 import android.view.animation.DecelerateInterpolator;
 import android.view.animation.Interpolator;
+import android.view.animation.LayoutAnimationController;
 import android.view.animation.LinearInterpolator;
 import android.view.animation.OvershootInterpolator;
 import android.view.animation.RotateAnimation;
@@ -75,10 +76,8 @@ public class AnimationTweenFragment extends BaseFragment {
     Switch mSwRepeatMode;
     @BindView(R.id.sp_interpolator)
     Spinner mSpInterpolator;
-    @BindView(R.id.ll_container_common)
-    LinearLayout mLlContainerCommon;
-    @BindView(R.id.ll_container_individual)
-    LinearLayout mLlContainerIndividual;
+    @BindView(R.id.ll_container)
+    LinearLayout mLlContainer;
 
     // common
     private AnimationSeekBarView mDurationView;
@@ -118,6 +117,7 @@ public class AnimationTweenFragment extends BaseFragment {
         initAvatar();
         initButton();
         initRadioGroup();
+        initContainerAnimation();
     }
 
     private void initAvatar() {
@@ -208,10 +208,26 @@ public class AnimationTweenFragment extends BaseFragment {
             @Override
             public void onCheckedChanged(RadioGroup group, @IdRes int checkedId) {
                 resetCheckedId(checkedId);
+                // 播放容器动画
+                mLlContainer.startLayoutAnimation();
             }
         });
         // 设置默认选中
         mRbAlpha.setChecked(true);
+    }
+
+    private void initContainerAnimation() {
+        AnimationSet animationSet = new AnimationSet(false);
+        TranslateAnimation translateAnimation = new TranslateAnimation(Animation.RELATIVE_TO_SELF, 1,
+                Animation.RELATIVE_TO_SELF, 0, Animation.RELATIVE_TO_SELF, 0, Animation.RELATIVE_TO_SELF, 0);
+        AlphaAnimation alphaAnimation = new AlphaAnimation(0, 1);
+        animationSet.addAnimation(alphaAnimation);
+        animationSet.addAnimation(translateAnimation);
+        animationSet.setDuration(500);
+        LayoutAnimationController controller = new LayoutAnimationController(animationSet);
+        controller.setOrder(LayoutAnimationController.ORDER_NORMAL);
+        controller.setDelay(0.2f);
+        mLlContainer.setLayoutAnimation(controller);
     }
 
     private void resetCheckedId(@IdRes int checkedId) {
@@ -227,7 +243,7 @@ public class AnimationTweenFragment extends BaseFragment {
 
         if (mDurationView == null) {
             mDurationView = new AnimationSeekBarView(getContext());
-            mLlContainerCommon.addView(mDurationView.mView);
+            mLlContainer.addView(mDurationView.mView);
         }
         mDurationView.init("duration", 0, 5000, 1000, 0);
     }
@@ -256,9 +272,13 @@ public class AnimationTweenFragment extends BaseFragment {
             return;
         }
 
-        mLlContainerIndividual.removeAllViews();
+        int childCount = mLlContainer.getChildCount();
+        if (childCount > 5) {
+            mLlContainer.removeViews(5, childCount - 5);
+        }
+
         for (View view : views) {
-            mLlContainerIndividual.addView(view);
+            mLlContainer.addView(view);
         }
     }
 
