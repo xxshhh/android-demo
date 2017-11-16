@@ -15,6 +15,7 @@ import android.widget.FrameLayout;
 import com.xxshhh.android.android_demo.R;
 import com.xxshhh.android.android_demo.base.activity.BaseActivity;
 import com.xxshhh.android.android_demo.function.home.utils.HomeNavIconUtils;
+import com.xxshhh.android.android_demo.function.mine.MineFragment;
 import com.xxshhh.android.android_demo.function.practice.PracticeFragment;
 
 import butterknife.BindView;
@@ -83,6 +84,7 @@ public class HomeActivity extends BaseActivity {
                 int id = item.getItemId();
                 switch (id) {
                     case R.id.nav_mine:
+                        switchMine();
                         break;
                     case R.id.nav_official_practice:
                         switchPractice();
@@ -107,6 +109,11 @@ public class HomeActivity extends BaseActivity {
 
     private void replaceFragment(Fragment fragment) {
         getSupportFragmentManager().beginTransaction().replace(R.id.fl_container, fragment).commit();
+    }
+
+    private void switchMine() {
+        MineFragment mineFragment = new MineFragment();
+        replaceFragment(mineFragment);
     }
 
     private void switchPractice() {

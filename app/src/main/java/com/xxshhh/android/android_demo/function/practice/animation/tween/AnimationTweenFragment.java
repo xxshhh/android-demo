@@ -36,6 +36,7 @@ import com.mikepenz.community_material_typeface_library.CommunityMaterial;
 import com.mikepenz.iconics.IconicsDrawable;
 import com.xxshhh.android.android_demo.R;
 import com.xxshhh.android.android_demo.base.fragment.BaseFragment;
+import com.xxshhh.android.android_demo.common.utils.ToastUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -125,6 +126,12 @@ public class AnimationTweenFragment extends BaseFragment {
                 .colorRes(R.color.colorPrimary)
                 .sizeDp(80);
         mIvAvatar.setImageDrawable(drawable);
+        mIvAvatar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ToastUtils.show(getContext(), "click me");
+            }
+        });
     }
 
     private void initButton() {

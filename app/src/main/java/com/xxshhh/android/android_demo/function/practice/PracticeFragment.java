@@ -9,6 +9,7 @@ import com.xxshhh.android.android_demo.R;
 import com.xxshhh.android.android_demo.base.fragment.BaseFragment;
 import com.xxshhh.android.android_demo.common.activity.CommonContainerActivity;
 import com.xxshhh.android.android_demo.function.practice.animation.demo.AnimationDemoFragment;
+import com.xxshhh.android.android_demo.function.practice.animation.frame.AnimationFrameFragment;
 import com.xxshhh.android.android_demo.function.practice.animation.property.AnimationPropertyFragment;
 import com.xxshhh.android.android_demo.function.practice.animation.tween.AnimationTweenFragment;
 
@@ -48,6 +49,7 @@ public class PracticeFragment extends BaseFragment {
         mBtnAnimationFrame.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                CommonContainerActivity.start(getContext(), AnimationFrameFragment.class);
             }
         });
 

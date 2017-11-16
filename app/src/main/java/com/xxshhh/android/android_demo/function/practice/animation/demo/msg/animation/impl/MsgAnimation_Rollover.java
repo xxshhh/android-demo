@@ -318,7 +318,7 @@ public class MsgAnimation_Rollover implements IMsgAnimation {
 
         // 创建一个小球
         final ImageView circleView = new ImageView(context);
-        Drawable defaultDrawable = ContextCompat.getDrawable(context, R.drawable.animation_demo_msg_bg_selector);
+        Drawable defaultDrawable = ContextCompat.getDrawable(context, R.drawable.animation_msg_bg_selector);
         Drawable circleDrawable = getCircleDrawable(context, defaultDrawable);
         circleView.setImageDrawable(circleDrawable);
 
