@@ -16,53 +16,54 @@
         android:paddingTop="20dp">
 
         <Button
-            android:id="@+id/btn_1"
+            android:id="@+id/btn_alpha"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content"
+            android:text="alpha"/>
 
         <Button
-            android:id="@+id/btn_2"
+            android:id="@+id/btn_rotate"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content"
+            android:text="rotate"/>
 
         <Button
-            android:id="@+id/btn_3"
+            android:id="@+id/btn_scale"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content"
+            android:text="scale"/>
 
         <Button
-            android:id="@+id/btn_4"
+            android:id="@+id/btn_translate"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content"
+            android:text="translate"/>
 
         <Button
-            android:id="@+id/btn_5"
+            android:id="@+id/btn_set"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content"
+            android:text="set"/>
 
         <Button
-            android:id="@+id/btn_6"
+            android:id="@+id/btn_argb"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content"
+            android:text="argb"/>
 
         <Button
-            android:id="@+id/btn_7"
+            android:id="@+id/btn_keyframe"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content"
+            android:text="keyframe"/>
 
         <Button
-            android:id="@+id/btn_8"
+            android:id="@+id/btn_bezier"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
-
-        <Button
-            android:id="@+id/btn_9"
-            android:layout_columnSpan="4"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content"
+            android:text="bezier"/>
 
     </GridLayout>
-
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -77,6 +78,5 @@
             tools:src="@mipmap/ic_launcher_round"/>
 
     </RelativeLayout>
-
 
 </RelativeLayout>
