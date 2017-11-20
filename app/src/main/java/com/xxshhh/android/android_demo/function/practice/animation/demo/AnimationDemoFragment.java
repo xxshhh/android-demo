@@ -28,7 +28,6 @@ import butterknife.BindView;
 public class AnimationDemoFragment extends BaseFragment
         implements IMsgAnimationCallback {
 
-
     @BindView(R.id.btn_add)
     Button mBtnAdd;
     @BindView(R.id.btn_multi_add)
@@ -110,7 +109,7 @@ public class AnimationDemoFragment extends BaseFragment
         int size = mAdapter.getItemCount();
         List<String> msgs = new ArrayList<>();
         for (int i = 0; i < count; i++) {
-            int position = size + count;
+            int position = size + i;
             msgs.add(getString(R.string.place_text) + position);
         }
         mAdapter.getDataList().addAll(msgs);

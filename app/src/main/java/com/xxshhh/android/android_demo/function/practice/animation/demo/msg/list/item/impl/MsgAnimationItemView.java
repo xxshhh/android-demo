@@ -54,9 +54,7 @@ public class MsgAnimationItemView extends LinearLayout
         }
     }
 
-    @Override
-    protected void onDetachedFromWindow() {
-        super.onDetachedFromWindow();
+    public void recycled() {
         if (mAnimationLifecycle != null) {
             mAnimationLifecycle.onDestroy();
         }

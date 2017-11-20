@@ -331,9 +331,9 @@ public class MsgAnimation_Rollover implements IMsgAnimation {
         float controlX = startX;
         float controlY = endY;
 
-        // 根据高度确定动画时间，相关公式：y = 0.465*x + 0.404
+        // 根据高度确定动画时间，相关公式：y = 0.232*x + 0.202
         float percent = (startY - endY) / getScreenHeight(context);
-        long duration = (long) ((0.465 * percent + 0.404) * 1000);
+        long duration = (long) ((0.232 * percent + 0.202) * 1000);
 
         // 创建贝塞尔曲线动画
         ValueAnimator animator = getBezierCurveAnimation(startX, startY, controlX, controlY, endX, endY,
@@ -574,7 +574,7 @@ public class MsgAnimation_Rollover implements IMsgAnimation {
      * 获取文本抖动动画
      */
     private Animator getTextShakeAnimation(View msgView) {
-        long totalTime = 42 * PER_FRAME_TIME;
+        long totalTime = 28 * PER_FRAME_TIME;
         float[] k = new float[28];
         for (int i = 0; i < 28; i++) {
             k[i] = i / 27f;

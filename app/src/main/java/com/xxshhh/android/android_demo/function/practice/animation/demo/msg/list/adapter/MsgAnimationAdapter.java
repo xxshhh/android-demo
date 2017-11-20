@@ -36,4 +36,12 @@ public class MsgAnimationAdapter extends BaseAdapter<String> {
             super(itemView);
         }
     }
+
+    @Override
+    public void onViewRecycled(RecyclerView.ViewHolder holder) {
+        super.onViewRecycled(holder);
+        if (holder.itemView instanceof MsgAnimationItemView) {
+            ((MsgAnimationItemView) holder.itemView).recycled();
+        }
+    }
 }
