@@ -33,6 +33,8 @@ import android.view.animation.DecelerateInterpolator;
 import android.view.animation.LinearInterpolator;
 import android.widget.ImageView;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.bitmap_recycle.BitmapPool;
 import com.xxshhh.android.android_demo.R;
 import com.xxshhh.android.android_demo.common.activity.CommonContainerActivity;
 import com.xxshhh.android.android_demo.function.practice.animation.demo.msg.animation.IMsgAnimation;
@@ -324,9 +326,11 @@ public class MsgAnimation_Rollover implements IMsgAnimation {
         }
 
         // 创建一个小球
+        Drawable circleDrawable = getCircleDrawable(context);
+        if (circleDrawable == null) {
+            return null;
+        }
         final ImageView circleView = new ImageView(context);
-        Drawable defaultDrawable = ContextCompat.getDrawable(context, R.drawable.animation_msg_bg_selector);
-        Drawable circleDrawable = getCircleDrawable(context, defaultDrawable);
         circleView.setImageDrawable(circleDrawable);
 
         // 计算小球起点、终点、控制点
@@ -392,18 +396,24 @@ public class MsgAnimation_Rollover implements IMsgAnimation {
     /**
      * 获取小球背景
      */
-    private Drawable getCircleDrawable(Context context, Drawable drawable) {
+    private Drawable getCircleDrawable(Context context) {
+        Drawable drawable = ContextCompat.getDrawable(context, R.drawable.animation_msg_bg_selector);
+        int width = drawable.getIntrinsicWidth();
+        int height = drawable.getIntrinsicHeight();
+        if (width == 0 || height == 0) {
+            return null;
+        }
+
+        // Glide
+        BitmapPool bitmapPool = Glide.get(context).getBitmapPool();
         // Drawable转Bitmap
-        Bitmap srcBitmap = Bitmap.createBitmap(drawable.getIntrinsicWidth(),
-                drawable.getIntrinsicHeight(), Bitmap.Config.ARGB_8888);
+        Bitmap srcBitmap = bitmapPool.get(width, height, Bitmap.Config.ARGB_8888);
         Canvas srcCanvas = new Canvas(srcBitmap);
-        drawable.setBounds(0, 0, srcCanvas.getWidth(), srcCanvas.getHeight());
+        drawable.setBounds(0, 0, width, height);
         drawable.draw(srcCanvas);
 
         // 裁剪小球形状Bitmap
-        int width = srcBitmap.getWidth();
-        int height = srcBitmap.getHeight();
-        Bitmap outBitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
+        Bitmap outBitmap = bitmapPool.get(width, height, Bitmap.Config.ARGB_8888);
         Canvas canvas = new Canvas(outBitmap);
         Paint paint = new Paint();
         paint.setAntiAlias(true);
