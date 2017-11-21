@@ -55,6 +55,7 @@ public class MsgAnimation_Rollover implements IMsgAnimation {
     // --- 动画相关 ---
     private Subscription mGetChatAnimationSub;
     private Animator mMsgAnimation;
+    private IMsgAnimationView mView;
 
     // --- 裁剪相关 ---
     private Path mRootBorderPath; // 根布局边界路径
@@ -63,6 +64,7 @@ public class MsgAnimation_Rollover implements IMsgAnimation {
     private boolean mIsPlay; // 是否正在播放裁剪动画
 
     private static final int PER_FRAME_TIME = 40; // 动画每帧时间
+    private MessageQueue.IdleHandler mIdleHandler; // 绘制完成的回调
 
     public MsgAnimation_Rollover() {
         mGetChatAnimationSub = null;
@@ -76,36 +78,14 @@ public class MsgAnimation_Rollover implements IMsgAnimation {
 
     @Override
     public void playAnimation(IMsgAnimationView msgAnimationView) {
-        // 初始化View
-        if (msgAnimationView == null) {
-            return;
-        }
-        final View itemView = msgAnimationView.getItemView();
-        final View msgView = msgAnimationView.getMsgView();
-        final View avatarView = msgAnimationView.getAvatarView();
-        if (itemView == null || msgView == null || avatarView == null) {
-            return;
-        }
+        mView = msgAnimationView;
 
-        // 设置生命周期
-        msgAnimationView.setMsgAnimationLifecycle(new IMsgAnimationLifecycle() {
-            @Override
-            public void onDraw(Canvas canvas) {
-                clipCanvas(canvas);
-            }
-
-            @Override
-            public void onDestroy() {
-                if (mMsgAnimation != null) {
-                    mMsgAnimation.end();
-                }
-            }
-        });
-
-        // 设置itemView不可见
-        itemView.setVisibility(View.INVISIBLE);
+        // 设置动画关联生命周期
+        setLifecycle();
+        // 设置ItemView不可见
+        setItemViewVisible(false);
         // 绘制完成的回调
-        Looper.myQueue().addIdleHandler(new MessageQueue.IdleHandler() {
+        mIdleHandler = new MessageQueue.IdleHandler() {
             @Override
             public boolean queueIdle() {
                 // 获取动画
@@ -113,8 +93,13 @@ public class MsgAnimation_Rollover implements IMsgAnimation {
                         .create(new Observable.OnSubscribe<Animator>() {
                             @Override
                             public void call(Subscriber<? super Animator> subscriber) {
-                                subscriber.onNext(getAnimation(itemView, msgView, avatarView));
-                                subscriber.onCompleted();
+                                try {
+                                    Animator animator = getAnimation();
+                                    subscriber.onNext(animator);
+                                    subscriber.onCompleted();
+                                } catch (Exception e) {
+                                    subscriber.onError(e);
+                                }
                             }
                         })
                         .subscribeOn(Schedulers.io())
@@ -123,26 +108,18 @@ public class MsgAnimation_Rollover implements IMsgAnimation {
                             @Override
                             public void onCompleted() {
                                 if (mMsgAnimation == null) {
-                                    // 设置itemView可见
-                                    itemView.setVisibility(View.VISIBLE);
+                                    // 设置ItemView可见
+                                    setItemViewVisible(true);
                                 } else {
-                                    // 设置动画监听器
-                                    mMsgAnimation.addListener(new AnimatorListenerAdapter() {
-                                        @Override
-                                        public void onAnimationEnd(Animator animation) {
-                                            super.onAnimationEnd(animation);
-                                            endAnimation();
-                                        }
-                                    });
-                                    // 动画开始
+                                    // 开始动画
                                     mMsgAnimation.start();
                                 }
                             }
 
                             @Override
                             public void onError(Throwable e) {
-                                // 设置itemView可见
-                                itemView.setVisibility(View.VISIBLE);
+                                // 设置ItemView可见
+                                setItemViewVisible(true);
                                 e.printStackTrace();
                             }
 
@@ -153,18 +130,53 @@ public class MsgAnimation_Rollover implements IMsgAnimation {
                         });
                 return false;
             }
+        };
+        Looper.myQueue().addIdleHandler(mIdleHandler);
+    }
+
+    /**
+     * 设置ItemView可见性
+     */
+    private void setItemViewVisible(boolean visible) {
+        if (mView != null && mView.getItemView() != null) {
+            mView.getItemView().setVisibility(visible ? View.VISIBLE : View.INVISIBLE);
+        }
+    }
+
+    /**
+     * 设置动画关联生命周期
+     */
+    private void setLifecycle() {
+        if (mView == null) {
+            return;
+        }
+        mView.setMsgAnimationLifecycle(new IMsgAnimationLifecycle() {
+            @Override
+            public void onDraw(Canvas canvas) {
+                clipCanvas(canvas);
+            }
+
+            @Override
+            public void onDestroy() {
+                destroy();
+            }
         });
     }
 
     /**
-     * 结束动画
+     * 销毁
      */
-    private void endAnimation() {
+    private void destroy() {
+        if (mIdleHandler != null) {
+            Looper.myQueue().removeIdleHandler(mIdleHandler);
+            mIdleHandler = null;
+        }
         if (mGetChatAnimationSub != null && !mGetChatAnimationSub.isUnsubscribed()) {
             mGetChatAnimationSub.unsubscribe();
-            mGetChatAnimationSub = null;
         }
+        mGetChatAnimationSub = null;
         if (mMsgAnimation != null) {
+            mMsgAnimation.end();
             mMsgAnimation = null;
             mIsPlay = false;
         }
@@ -185,7 +197,18 @@ public class MsgAnimation_Rollover implements IMsgAnimation {
     /**
      * 获取动画
      */
-    private Animator getAnimation(final View itemView, View msgView, View avatarView) {
+    private Animator getAnimation() {
+        // 初始化View
+        if (mView == null) {
+            return null;
+        }
+        View itemView = mView.getItemView();
+        View avatarView = mView.getAvatarView();
+        View msgView = mView.getMsgView();
+        if (itemView == null || avatarView == null || msgView == null) {
+            return null;
+        }
+
         Context context = itemView.getContext();
         // 小球动画的三个点：起点、最高点、终点
         int[] points = getCircleAnimationPoints(context, msgView);
@@ -204,22 +227,6 @@ public class MsgAnimation_Rollover implements IMsgAnimation {
         if (circleAnimator == null) {
             return null;
         }
-        circleAnimator.setInterpolator(new DecelerateInterpolator()); // 小球减速运动
-        circleAnimator.addListener(new AnimatorListenerAdapter() {
-            @Override
-            public void onAnimationStart(Animator animation) {
-                super.onAnimationStart(animation);
-                // 设置itemView不可见
-                itemView.setVisibility(View.INVISIBLE);
-            }
-
-            @Override
-            public void onAnimationEnd(Animator animation) {
-                super.onAnimationEnd(animation);
-                // 设置itemView可见
-                itemView.setVisibility(View.VISIBLE);
-            }
-        });
 
         // 消息动画
         Animator msgAnimator = getMsgAnimation(itemView, msgView, avatarView, topX, topY, endX, endY);
@@ -338,18 +345,20 @@ public class MsgAnimation_Rollover implements IMsgAnimation {
         // 创建贝塞尔曲线动画
         ValueAnimator animator = getBezierCurveAnimation(startX, startY, controlX, controlY, endX, endY,
                 duration, circleView);
-        // 动画开始时添加小球，结束时移除小球
+        animator.setInterpolator(new DecelerateInterpolator()); // 小球减速运动
         animator.addListener(new AnimatorListenerAdapter() {
             @Override
             public void onAnimationStart(Animator animation) {
                 super.onAnimationStart(animation);
-                parentView.addView(circleView);
+                setItemViewVisible(false); // 设置ItemView不可见
+                parentView.addView(circleView); // 开始时添加小球
             }
 
             @Override
             public void onAnimationEnd(Animator animation) {
                 super.onAnimationEnd(animation);
-                parentView.removeView(circleView);
+                setItemViewVisible(true); // 设置ItemView可见
+                parentView.removeView(circleView); // 结束时移除小球
             }
         });
         return animator;
@@ -476,7 +485,6 @@ public class MsgAnimation_Rollover implements IMsgAnimation {
         if (textShakeAnimator == null) {
             return null;
         }
-        textShakeAnimator.setInterpolator(new LinearInterpolator()); // 抖动匀速变化
         textShakeAnimator.setStartDelay(textRevealAnimation.getDuration() - 4 * PER_FRAME_TIME); // 提前4帧
 
         // 返回动画集合
@@ -491,14 +499,10 @@ public class MsgAnimation_Rollover implements IMsgAnimation {
     private Animator getTextRevealAnimation(final View itemView, final View msgView, float startX, float startY, float endX, float endY) {
         // 裁剪相关参数
         // 获取根布局边界路径（不变）
-        final int[] rootLoc = new int[2];
-        itemView.getLocationOnScreen(rootLoc);
-        float rootLeft = 0;
-        float rootTop = 0;
-        float rootRight = itemView.getWidth();
-        float rootBottom = itemView.getHeight();
         mRootBorderPath.reset();
-        mRootBorderPath.addRect(rootLeft, rootTop, rootRight, rootBottom, Path.Direction.CW);
+        mRootBorderPath.addRect(0, 0, itemView.getWidth(), itemView.getHeight(), Path.Direction.CW);
+        // 根布局位置
+        final int[] rootLoc = new int[2];
         // 文本位置
         final int[] textLoc = new int[2];
         // 文本圆角
@@ -530,6 +534,7 @@ public class MsgAnimation_Rollover implements IMsgAnimation {
 
                 // 裁剪文本
                 // 获取文本布局边界路径（变化）
+                itemView.getLocationOnScreen(rootLoc);
                 msgView.getLocationOnScreen(textLoc);
                 float textLeft = textLoc[0] - rootLoc[0];
                 float textTop = textLoc[1] - rootLoc[1];
@@ -611,6 +616,7 @@ public class MsgAnimation_Rollover implements IMsgAnimation {
         ObjectAnimator animator = ObjectAnimator.ofPropertyValuesHolder(msgView,
                 pvhScaleX, pvhScaleY);
         animator.setDuration(totalTime);
+        animator.setInterpolator(new LinearInterpolator()); // 抖动匀速变化
         return animator;
     }
 

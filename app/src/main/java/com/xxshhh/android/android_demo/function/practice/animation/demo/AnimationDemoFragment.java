@@ -65,7 +65,9 @@ public class AnimationDemoFragment extends BaseFragment
 
     private void initMsgList() {
         mAdapter = new MsgAnimationAdapter(getContext());
-        mRvMsgList.setLayoutManager(new LinearLayoutManager(getContext()));
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
+        linearLayoutManager.setRecycleChildrenOnDetach(true);
+        mRvMsgList.setLayoutManager(linearLayoutManager);
         mRvMsgList.setItemAnimator(new MsgAnimationItemAnimator());
         mRvMsgList.setHasFixedSize(true);
         mRvMsgList.setAdapter(mAdapter);
