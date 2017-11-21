@@ -505,10 +505,17 @@ public class MsgAnimation_Rollover implements IMsgAnimation {
         final int[] rootLoc = new int[2];
         // 文本位置
         final int[] textLoc = new int[2];
+        // 文本宽高及设置中心
+        final float textWidth = msgView.getWidth();
+        final float textHeight = msgView.getHeight();
+        msgView.setPivotX(textWidth / 2);
+        msgView.setPivotY(textHeight / 2);
         // 文本圆角
         final int round = itemView.getResources().getDimensionPixelOffset(R.dimen.animation_rect_round_size);
-        // 小球半径
+        // 小球半径及最大半径
         final float radius = getCircleRadius(itemView.getContext());
+        final float maxRadiusX = textWidth / 2f;
+        final float maxRadiusY = textHeight / 2f;
         // 临时Path
         final Path path = new Path();
         // 临时RectF
@@ -526,10 +533,6 @@ public class MsgAnimation_Rollover implements IMsgAnimation {
 
                 // 旋转角度
                 int degree = (int) (-10 + 10 * fraction);
-                float textWidth = msgView.getWidth();
-                float textHeight = msgView.getHeight();
-                msgView.setPivotX(textWidth / 2);
-                msgView.setPivotY(textHeight / 2);
                 msgView.setRotation(degree);
 
                 // 裁剪文本
@@ -550,10 +553,8 @@ public class MsgAnimation_Rollover implements IMsgAnimation {
                 mTextBorderPath.addPath(path, matrix);
 
                 // 获取实际动画路径（变化）
-                float centerX = textLeft + textWidth / 2f;
-                float centerY = textTop + textHeight / 2f;
-                float maxRadiusX = textWidth / 2f;
-                float maxRadiusY = textHeight / 2f;
+                float centerX = textLeft + maxRadiusX;
+                float centerY = textTop + maxRadiusY;
                 float marginX = radius + (maxRadiusX - radius) * fraction;
                 float marginY = radius + (maxRadiusY - radius) * fraction;
                 float left = centerX - marginX;
