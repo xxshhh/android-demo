@@ -33,8 +33,6 @@ import android.view.animation.DecelerateInterpolator;
 import android.view.animation.LinearInterpolator;
 import android.widget.ImageView;
 
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.engine.bitmap_recycle.BitmapPool;
 import com.xxshhh.android.android_demo.R;
 import com.xxshhh.android.android_demo.common.activity.CommonContainerActivity;
 import com.xxshhh.android.android_demo.function.practice.animation.demo.msg.animation.IMsgAnimation;
@@ -363,6 +361,15 @@ public class MsgAnimation_Rollover implements IMsgAnimation {
                 super.onAnimationEnd(animation);
                 setItemViewVisible(true); // 设置ItemView可见
                 parentView.removeView(circleView); // 结束时移除小球
+                // 回收Bitmap
+                Drawable drawable = circleView.getDrawable();
+                if (drawable != null && drawable instanceof BitmapDrawable) {
+                    circleView.setImageDrawable(null);
+                    Bitmap bitmap = ((BitmapDrawable) drawable).getBitmap();
+                    if (!bitmap.isRecycled()) {
+                        bitmap.recycle();
+                    }
+                }
             }
         });
         return animator;
@@ -404,16 +411,14 @@ public class MsgAnimation_Rollover implements IMsgAnimation {
             return null;
         }
 
-        // Glide
-        BitmapPool bitmapPool = Glide.get(context).getBitmapPool();
         // Drawable转Bitmap
-        Bitmap srcBitmap = bitmapPool.get(width, height, Bitmap.Config.ARGB_8888);
+        Bitmap srcBitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
         Canvas srcCanvas = new Canvas(srcBitmap);
         drawable.setBounds(0, 0, width, height);
         drawable.draw(srcCanvas);
 
         // 裁剪小球形状Bitmap
-        Bitmap outBitmap = bitmapPool.get(width, height, Bitmap.Config.ARGB_8888);
+        Bitmap outBitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
         Canvas canvas = new Canvas(outBitmap);
         Paint paint = new Paint();
         paint.setAntiAlias(true);
@@ -424,6 +429,11 @@ public class MsgAnimation_Rollover implements IMsgAnimation {
         // 画矩形
         Rect rect = new Rect(0, 0, width, height);
         canvas.drawBitmap(srcBitmap, rect, rect, paint);
+
+        // 回收srcBitmap
+        if (!srcBitmap.isRecycled()) {
+            srcBitmap.recycle();
+        }
 
         // 得到小球Drawable
         return new BitmapDrawable(context.getResources(), outBitmap);
