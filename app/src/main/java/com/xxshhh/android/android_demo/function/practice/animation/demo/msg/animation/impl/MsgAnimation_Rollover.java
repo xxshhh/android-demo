@@ -52,6 +52,9 @@ import rx.schedulers.Schedulers;
  */
 public class MsgAnimation_Rollover implements IMsgAnimation {
 
+    private static final int PER_FRAME_TIME = 40; // 动画每帧时间
+    private MessageQueue.IdleHandler mIdleHandler; // 绘制完成的回调
+
     // --- 动画相关 ---
     private Subscription mGetChatAnimationSub;
     private Animator mMsgAnimation;
@@ -63,12 +66,12 @@ public class MsgAnimation_Rollover implements IMsgAnimation {
     private Path mAnimationPath; // 实际动画路径
     private boolean mIsPlay; // 是否正在播放裁剪动画
 
-    private static final int PER_FRAME_TIME = 40; // 动画每帧时间
-    private MessageQueue.IdleHandler mIdleHandler; // 绘制完成的回调
-
     public MsgAnimation_Rollover() {
+        mIdleHandler = null;
+
         mGetChatAnimationSub = null;
         mMsgAnimation = null;
+        mView = null;
 
         mRootBorderPath = new Path();
         mTextBorderPath = new Path();
@@ -180,6 +183,9 @@ public class MsgAnimation_Rollover implements IMsgAnimation {
             mMsgAnimation = null;
             mIsPlay = false;
         }
+        // 设置ItemView可见
+        setItemViewVisible(true);
+        mView = null;
     }
 
     /**
@@ -352,24 +358,28 @@ public class MsgAnimation_Rollover implements IMsgAnimation {
             @Override
             public void onAnimationStart(Animator animation) {
                 super.onAnimationStart(animation);
-                setItemViewVisible(false); // 设置ItemView不可见
                 parentView.addView(circleView); // 开始时添加小球
             }
 
             @Override
             public void onAnimationEnd(Animator animation) {
                 super.onAnimationEnd(animation);
-                setItemViewVisible(true); // 设置ItemView可见
-                parentView.removeView(circleView); // 结束时移除小球
-                // 回收Bitmap
-                Drawable drawable = circleView.getDrawable();
-                if (drawable != null && drawable instanceof BitmapDrawable) {
-                    circleView.setImageDrawable(null);
-                    Bitmap bitmap = ((BitmapDrawable) drawable).getBitmap();
-                    if (!bitmap.isRecycled()) {
-                        bitmap.recycle();
+                parentView.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        setItemViewVisible(true); // 设置ItemView可见
+                        parentView.removeView(circleView); // 结束时移除小球
+                        // 回收Bitmap
+                        Drawable drawable = circleView.getDrawable();
+                        if (drawable != null && drawable instanceof BitmapDrawable) {
+                            circleView.setImageDrawable(null);
+                            Bitmap bitmap = ((BitmapDrawable) drawable).getBitmap();
+                            if (!bitmap.isRecycled()) {
+                                bitmap.recycle();
+                            }
+                        }
                     }
-                }
+                });
             }
         });
         return animator;
@@ -525,11 +535,9 @@ public class MsgAnimation_Rollover implements IMsgAnimation {
         final int[] rootLoc = new int[2];
         // 文本位置
         final int[] textLoc = new int[2];
-        // 文本宽高及设置中心
+        // 文本宽高
         final float textWidth = msgView.getWidth();
         final float textHeight = msgView.getHeight();
-        msgView.setPivotX(textWidth / 2);
-        msgView.setPivotY(textHeight / 2);
         // 文本圆角
         final int round = itemView.getResources().getDimensionPixelOffset(R.dimen.animation_rect_round_size);
         // 小球半径及最大半径
@@ -546,6 +554,15 @@ public class MsgAnimation_Rollover implements IMsgAnimation {
         // 创建贝塞尔曲线动画
         ValueAnimator animator = getBezierCurveAnimation(startX - endX, startY - endY, 0, startY - endY, 0, 0,
                 8 * PER_FRAME_TIME, msgView);
+        animator.addListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationStart(Animator animation) {
+                super.onAnimationStart(animation);
+                // 设置中心点
+                msgView.setPivotX(textWidth / 2);
+                msgView.setPivotY(textHeight / 2);
+            }
+        });
         animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
             @Override
             public void onAnimationUpdate(ValueAnimator animation) {
@@ -644,11 +661,7 @@ public class MsgAnimation_Rollover implements IMsgAnimation {
     /**
      * 获取头像动画
      */
-    private Animator getAvatarAnimation(View avatarView) {
-        // 设置中心点
-        avatarView.setPivotX(avatarView.getWidth() / 2f);
-        avatarView.setPivotY(avatarView.getHeight());
-
+    private Animator getAvatarAnimation(final View avatarView) {
         long totalTime = 12 * PER_FRAME_TIME;
         float k1 = 0f;
         float k2 = 2f / 12f;
@@ -686,6 +699,15 @@ public class MsgAnimation_Rollover implements IMsgAnimation {
         ObjectAnimator animator = ObjectAnimator.ofPropertyValuesHolder(avatarView,
                 pvhAlpha, pvhScaleX, pvhScaleY);
         animator.setDuration(totalTime);
+        animator.addListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationStart(Animator animation) {
+                super.onAnimationStart(animation);
+                // 设置中心点
+                avatarView.setPivotX(avatarView.getWidth() / 2f);
+                avatarView.setPivotY(avatarView.getHeight());
+            }
+        });
         return animator;
     }
 
