@@ -8,7 +8,7 @@ import android.widget.Button;
 import com.xxshhh.android.android_demo.R;
 import com.xxshhh.android.android_demo.base.fragment.BaseFragment;
 import com.xxshhh.android.android_demo.common.activity.CommonContainerActivity;
-import com.xxshhh.android.android_demo.function.practice.animation.demo.avatar.AnimationAvatarFragment;
+import com.xxshhh.android.android_demo.function.practice.animation.demo.importantMsg.AnimationImportantMsgFragment;
 import com.xxshhh.android.android_demo.function.practice.animation.demo.msg.AnimationMsgFragment;
 
 import butterknife.BindView;
@@ -21,8 +21,8 @@ public class AnimationDemoFragment extends BaseFragment {
 
     @BindView(R.id.btn_msg_demo)
     Button mBtnMsgDemo;
-    @BindView(R.id.btn_avatar_demo)
-    Button mBtnAvatarDemo;
+    @BindView(R.id.btn_important_msg_demo)
+    Button mBtnImportantMsgDemo;
 
     @Override
     protected int getLayoutResID() {
@@ -47,10 +47,10 @@ public class AnimationDemoFragment extends BaseFragment {
             }
         });
 
-        mBtnAvatarDemo.setOnClickListener(new View.OnClickListener() {
+        mBtnImportantMsgDemo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                CommonContainerActivity.start(getContext(), AnimationAvatarFragment.class);
+                CommonContainerActivity.start(getContext(), AnimationImportantMsgFragment.class);
             }
         });
     }

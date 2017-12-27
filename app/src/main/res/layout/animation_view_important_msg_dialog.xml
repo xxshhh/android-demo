@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merge xmlns:android="http://schemas.android.com/apk/res/android"
+       android:layout_width="wrap_content"
+       android:layout_height="wrap_content">
+
+    <LinearLayout
+        android:id="@+id/ll_dialog"
+        android:layout_width="255dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="31dp"
+        android:background="@drawable/animation_important_msg_dialog_bg"
+        android:gravity="center_horizontal"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/tv_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="62dp"
+            android:text="重要消息"
+            android:textColor="#ff9518"
+            android:textSize="16dp"/>
+
+        <RelativeLayout
+            android:id="@+id/rl_container"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="22dp"
+            android:layout_marginLeft="15dp"
+            android:layout_marginRight="15dp"
+            android:layout_marginTop="21dp">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/place_text_long"
+                android:textColor="#333333"
+                android:textSize="15dp"/>
+        </RelativeLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1px"
+            android:background="#cccccc"/>
+
+        <TextView
+            android:id="@+id/tv_confirm"
+            android:layout_width="match_parent"
+            android:layout_height="44dp"
+            android:background="@drawable/animation_important_msg_dialog_confirm_selector"
+            android:clickable="true"
+            android:gravity="center"
+            android:text="确定"
+            android:textColor="#ff9518"
+            android:textSize="17dp"/>
+    </LinearLayout>
+
+    <ImageView
+        android:id="@+id/iv_logo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:src="@drawable/animation_important_msg_window_icon_decorate"/>
+</merge>

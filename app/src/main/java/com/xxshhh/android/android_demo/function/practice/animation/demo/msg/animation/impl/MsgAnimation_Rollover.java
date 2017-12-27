@@ -414,7 +414,7 @@ public class MsgAnimation_Rollover implements IMsgAnimation {
      * 获取小球背景
      */
     private Drawable getCircleDrawable(Context context) {
-        Drawable drawable = ContextCompat.getDrawable(context, R.drawable.animation_msg_bg_selector);
+        Drawable drawable = ContextCompat.getDrawable(context, R.drawable.animation_msg_bg_me_selector);
         int width = drawable.getIntrinsicWidth();
         int height = drawable.getIntrinsicHeight();
         if (width == 0 || height == 0) {
