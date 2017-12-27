@@ -2,6 +2,7 @@ package com.xxshhh.android.android_demo.function.practice.animation.demo.importa
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
+import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.animation.PropertyValuesHolder;
 import android.animation.ValueAnimator;
@@ -44,24 +45,36 @@ public class ImportantMsgDialogView extends RelativeLayout {
         ButterKnife.bind(this);
     }
 
-    public TextView getTvTitle() {
-        return mTvTitle;
+    /**
+     * 设置确定按钮点击事件
+     */
+    public void setConfirmClickListener(OnClickListener onClickListener) {
+        mTvConfirm.setOnClickListener(onClickListener);
     }
 
-    public RelativeLayout getRlContainer() {
-        return mRlContainer;
+    /**
+     * 获取Logo的中心位置
+     */
+    public int[] getLogoCenterLocation() {
+        int[] logoLoc = new int[2];
+        mIvLogo.getLocationOnScreen(logoLoc);
+        logoLoc[0] += mIvLogo.getWidth() / 2;
+        logoLoc[1] += mIvLogo.getHeight() / 2;
+        return logoLoc;
     }
 
-    public TextView getTvConfirm() {
-        return mTvConfirm;
+    /**
+     * 获取Logo的宽度
+     */
+    public int getLogoWidth() {
+        return mIvLogo.getWidth();
     }
 
-    public LinearLayout getLlDialog() {
-        return mLlDialog;
-    }
-
-    public ImageView getIvLogo() {
-        return mIvLogo;
+    /**
+     * 获取Logo的高度
+     */
+    public int getLogoHeight() {
+        return mIvLogo.getHeight();
     }
 
     /**
@@ -82,7 +95,12 @@ public class ImportantMsgDialogView extends RelativeLayout {
      * 获取变换动画
      */
     public Animator getTransformAnimation(int[] endLoc, float startScale, float endScale) {
-        return getLogoBezierCurveAndScaleAnimation(endLoc, startScale, endScale);
+        Animator logoBezierCurveAndScaleAnimation = getLogoBezierCurveAndScaleAnimation(endLoc, startScale, endScale);
+        Animator dialogAlphaAnimation = getDialogAlphaAnimation();
+
+        AnimatorSet animatorSet = new AnimatorSet();
+        animatorSet.playTogether(logoBezierCurveAndScaleAnimation, dialogAlphaAnimation);
+        return animatorSet;
     }
 
     private Animator getLogoScaleAnimation(float startScale, float endScale) {
@@ -91,7 +109,8 @@ public class ImportantMsgDialogView extends RelativeLayout {
 
         ObjectAnimator animator = ObjectAnimator.ofPropertyValuesHolder(mIvLogo,
                 pvhScaleX, pvhScaleY);
-        animator.setDuration(400);
+        animator.setDuration(300);
+        animator.setInterpolator(new DecelerateInterpolator());
         animator.addListener(new AnimatorListenerAdapter() {
             @Override
             public void onAnimationStart(Animator animation) {
@@ -109,7 +128,8 @@ public class ImportantMsgDialogView extends RelativeLayout {
 
         ObjectAnimator animator = ObjectAnimator.ofPropertyValuesHolder(mLlDialog,
                 pvhScaleX, pvhScaleY);
-        animator.setDuration(400);
+        animator.setDuration(300);
+        animator.setInterpolator(new DecelerateInterpolator());
         animator.addListener(new AnimatorListenerAdapter() {
             @Override
             public void onAnimationStart(Animator animation) {
@@ -135,6 +155,8 @@ public class ImportantMsgDialogView extends RelativeLayout {
         // 计算起点、终点、控制点
         int[] startLoc = new int[2];
         mIvLogo.getLocationOnScreen(startLoc);
+        startLoc[0] += mIvLogo.getWidth() / 2;
+        startLoc[1] += mIvLogo.getHeight() / 2;
         float startX = 0;
         float startY = 0;
         float endX = endLoc[0] - startLoc[0];
@@ -153,7 +175,12 @@ public class ImportantMsgDialogView extends RelativeLayout {
             public void onAnimationStart(Animator animation) {
                 super.onAnimationStart(animation);
                 mIvLogo.setVisibility(VISIBLE);
-                mLlDialog.setVisibility(INVISIBLE);
+            }
+
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                super.onAnimationEnd(animation);
+                mIvLogo.setVisibility(INVISIBLE);
             }
         });
         final float[] currentPos = new float[2];
@@ -172,6 +199,13 @@ public class ImportantMsgDialogView extends RelativeLayout {
             }
         });
         animator.setDuration(500);
+        animator.setInterpolator(new DecelerateInterpolator());
+        return animator;
+    }
+
+    private Animator getDialogAlphaAnimation() {
+        ObjectAnimator animator = ObjectAnimator.ofFloat(mLlDialog, View.ALPHA, 1, 0);
+        animator.setDuration(250);
         animator.setInterpolator(new DecelerateInterpolator());
         return animator;
     }

@@ -1,6 +1,7 @@
 package com.xxshhh.android.android_demo.function.practice.animation.demo.importantMsg.dialog.view;
 
 import android.animation.Animator;
+import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
 import android.content.Context;
 import android.graphics.Canvas;
@@ -9,6 +10,7 @@ import android.graphics.Paint;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.view.View;
+import android.view.animation.LinearInterpolator;
 
 /**
  * 圆形揭露View
@@ -48,12 +50,13 @@ public class CircularRevealView extends View {
     /**
      * 获取圆形揭露动画
      */
-    public Animator getCircularRevealAnimation(float centerX, float centerY, float startRadius, float endRadius, long duration) {
+    public Animator getCircularRevealAnimation(float centerX, float centerY, float startRadius, float endRadius) {
         mCenterX = centerX;
         mCenterY = centerY;
 
         ValueAnimator animator = ValueAnimator.ofFloat(startRadius, endRadius);
-        animator.setDuration(duration);
+        animator.setDuration(500);
+        animator.setInterpolator(new LinearInterpolator());
         animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
             @Override
             public void onAnimationUpdate(ValueAnimator animation) {
@@ -61,6 +64,16 @@ public class CircularRevealView extends View {
                 invalidate();
             }
         });
+        return animator;
+    }
+
+    /**
+     * 获取渐变背景动画
+     */
+    public Animator getGradientBackgroundAnimation() {
+        ObjectAnimator animator = ObjectAnimator.ofFloat(this, View.ALPHA, 1, 0);
+        animator.setDuration(500);
+        animator.setInterpolator(new LinearInterpolator());
         return animator;
     }
 }

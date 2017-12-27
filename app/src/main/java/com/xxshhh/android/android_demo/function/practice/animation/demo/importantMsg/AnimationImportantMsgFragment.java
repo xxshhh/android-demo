@@ -11,7 +11,6 @@ import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.widget.Button;
 import android.widget.FrameLayout;
-import android.widget.ImageView;
 
 import com.xxshhh.android.android_demo.R;
 import com.xxshhh.android.android_demo.base.fragment.BaseFragment;
@@ -51,78 +50,81 @@ public class AnimationImportantMsgFragment extends BaseFragment {
     }
 
     private void initAvatar() {
+        // 获取容器
         ViewGroup viewGroup = (ViewGroup) getActivity().getWindow().getDecorView().findViewById(android.R.id.content);
-
+        // 创建帧布局
         final FrameLayout frameLayout = new FrameLayout(getContext());
         frameLayout.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
         viewGroup.addView(frameLayout);
-
+        // 添加头像View
         final ImportantMsgAvatarView avatarView = new ImportantMsgAvatarView(getContext());
         FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         params.topMargin = 1500;
         params.leftMargin = 100;
         avatarView.setLayoutParams(params);
         frameLayout.addView(avatarView);
-
-        final ImportantMsgDialogView dialogView = new ImportantMsgDialogView(getContext());
-        FrameLayout.LayoutParams params2 = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        params2.gravity = Gravity.CENTER;
-        dialogView.setLayoutParams(params2);
-        dialogView.setVisibility(View.INVISIBLE);
-        frameLayout.addView(dialogView);
-
-        frameLayout.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+        // 动画播放时机
+        avatarView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
             @Override
             public void onGlobalLayout() {
                 frameLayout.getViewTreeObserver().removeGlobalOnLayoutListener(this);
 
+                // 展示动画
                 final Animator showAnimation = avatarView.getShowAnimation();
                 showAnimation.start();
-
+                // 点击事件
                 avatarView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        int[] logoLoc = new int[2];
-                        ImageView logoView = dialogView.getIvLogo();
-                        logoView.getLocationOnScreen(logoLoc);
-
-                        int[] endLoc = new int[2];
-                        endLoc[0] = logoLoc[0] + logoView.getWidth() / 2 - avatarView.getWidth() / 2;
-                        endLoc[1] = logoLoc[1] + logoView.getHeight() / 2 - avatarView.getHeight() / 2;
-                        Animator transformAnimation = avatarView.getTransformAnimation(endLoc);
-                        transformAnimation.addListener(new AnimatorListenerAdapter() {
+                        // 添加弹窗View
+                        final ImportantMsgDialogView dialogView = new ImportantMsgDialogView(getContext());
+                        FrameLayout.LayoutParams params2 = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+                        params2.gravity = Gravity.CENTER;
+                        dialogView.setLayoutParams(params2);
+                        dialogView.setVisibility(View.INVISIBLE);
+                        frameLayout.addView(dialogView);
+                        dialogView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
                             @Override
-                            public void onAnimationStart(Animator animation) {
-                                super.onAnimationStart(animation);
-                                showAnimation.end();
-                            }
+                            public void onGlobalLayout() {
+                                dialogView.getViewTreeObserver().removeGlobalOnLayoutListener(this);
 
-                            @Override
-                            public void onAnimationEnd(Animator animation) {
-                                super.onAnimationEnd(animation);
-                                avatarView.setVisibility(View.INVISIBLE);
+                                // 变换动画
+                                Animator transformAnimation = avatarView.getTransformAnimation(dialogView.getLogoCenterLocation());
+                                transformAnimation.addListener(new AnimatorListenerAdapter() {
+                                    @Override
+                                    public void onAnimationStart(Animator animation) {
+                                        super.onAnimationStart(animation);
+                                        showAnimation.end();
+                                    }
+
+                                    @Override
+                                    public void onAnimationEnd(Animator animation) {
+                                        super.onAnimationEnd(animation);
+                                        frameLayout.removeView(avatarView);
+                                    }
+                                });
+                                // 过渡动画
+                                Animator transitionAnimation = dialogView.getTransitionAnimation((float) avatarView.getWidth() / (float) dialogView.getLogoWidth(), 1);
+                                transitionAnimation.addListener(new AnimatorListenerAdapter() {
+                                    @Override
+                                    public void onAnimationStart(Animator animation) {
+                                        super.onAnimationStart(animation);
+                                        dialogView.setVisibility(View.VISIBLE);
+                                    }
+
+                                    @Override
+                                    public void onAnimationEnd(Animator animation) {
+                                        super.onAnimationEnd(animation);
+                                        CommonContainerActivity.start(getContext(), AnimationImportantMsg2Fragment.class);
+                                        getActivity().overridePendingTransition(0, 0);
+                                    }
+                                });
+                                // 开始播放动画
+                                AnimatorSet animatorSet = new AnimatorSet();
+                                animatorSet.playSequentially(transformAnimation, transitionAnimation);
+                                animatorSet.start();
                             }
                         });
-
-                        Animator transitionAnimation = dialogView.getTransitionAnimation((float) avatarView.getWidth() / (float) logoView.getWidth(), 1);
-                        transitionAnimation.addListener(new AnimatorListenerAdapter() {
-                            @Override
-                            public void onAnimationStart(Animator animation) {
-                                super.onAnimationStart(animation);
-                                dialogView.setVisibility(View.VISIBLE);
-                            }
-
-                            @Override
-                            public void onAnimationEnd(Animator animation) {
-                                super.onAnimationEnd(animation);
-                                CommonContainerActivity.start(getContext(), AnimationImportantMsg2Fragment.class);
-                                getActivity().overridePendingTransition(0, 0);
-                            }
-                        });
-
-                        AnimatorSet animatorSet = new AnimatorSet();
-                        animatorSet.playSequentially(transformAnimation, transitionAnimation);
-                        animatorSet.start();
                     }
                 });
             }

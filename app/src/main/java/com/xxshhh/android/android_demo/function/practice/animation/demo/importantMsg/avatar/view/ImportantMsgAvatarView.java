@@ -62,7 +62,7 @@ public class ImportantMsgAvatarView extends RelativeLayout {
 
         ObjectAnimator animator = ObjectAnimator.ofPropertyValuesHolder(this,
                 pvhTranslationY, pvhAlpha);
-        animator.setDuration(400);
+        animator.setDuration(300);
         animator.setInterpolator(new DecelerateInterpolator());
         return animator;
     }
@@ -86,7 +86,7 @@ public class ImportantMsgAvatarView extends RelativeLayout {
                 setPivotY(getHeight());
             }
         });
-        animator.setDuration(400);
+        animator.setDuration(300);
         animator.setInterpolator(new LinearInterpolator());
         animator.setRepeatCount(ValueAnimator.INFINITE);
         animator.setRepeatMode(ValueAnimator.RESTART);
@@ -97,6 +97,8 @@ public class ImportantMsgAvatarView extends RelativeLayout {
         // 计算起点、终点、控制点
         int[] startLoc = new int[2];
         getLocationOnScreen(startLoc);
+        startLoc[0] += getWidth() / 2;
+        startLoc[1] += getHeight() / 2;
         float startX = 0;
         float startY = 0;
         float endX = endLoc[0] - startLoc[0];
