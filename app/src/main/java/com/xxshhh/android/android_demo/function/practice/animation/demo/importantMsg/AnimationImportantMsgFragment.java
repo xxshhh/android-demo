@@ -7,7 +7,8 @@ import android.widget.Button;
 
 import com.xxshhh.android.android_demo.R;
 import com.xxshhh.android.android_demo.base.fragment.BaseFragment;
-import com.xxshhh.android.android_demo.function.practice.animation.demo.importantMsg.manager.impl.AnimationImportantMsgManager;
+import com.xxshhh.android.android_demo.function.practice.animation.demo.importantMsg.container.IImportantMsgMainContainer;
+import com.xxshhh.android.android_demo.function.practice.animation.demo.importantMsg.container.impl.ImportantMsgMainContainer;
 
 import butterknife.BindView;
 
@@ -41,7 +42,7 @@ public class AnimationImportantMsgFragment extends BaseFragment {
     }
 
     private void initAvatar() {
-        AnimationImportantMsgManager manager = new AnimationImportantMsgManager(getActivity());
-        manager.addAvatarView();
+        IImportantMsgMainContainer container = new ImportantMsgMainContainer(getActivity());
+        container.addAvatarView();
     }
 }

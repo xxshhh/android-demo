@@ -8,7 +8,8 @@ import android.widget.TextView;
 
 import com.xxshhh.android.android_demo.R;
 import com.xxshhh.android.android_demo.base.fragment.BaseFragment;
-import com.xxshhh.android.android_demo.function.practice.animation.demo.importantMsg.manager.impl.AnimationImportantMsgManager;
+import com.xxshhh.android.android_demo.function.practice.animation.demo.importantMsg.container.IImportantMsgChatContainer;
+import com.xxshhh.android.android_demo.function.practice.animation.demo.importantMsg.container.impl.ImportantMsgChatContainer;
 
 import butterknife.BindView;
 
@@ -43,7 +44,7 @@ public class AnimationImportantMsg2Fragment extends BaseFragment {
     }
 
     private void initDialog() {
-        AnimationImportantMsgManager manager = new AnimationImportantMsgManager(getActivity());
-        manager.addDialogView(mIvLogo);
+        IImportantMsgChatContainer container = new ImportantMsgChatContainer(getActivity());
+        container.addDialogView(mIvLogo);
     }
 }
