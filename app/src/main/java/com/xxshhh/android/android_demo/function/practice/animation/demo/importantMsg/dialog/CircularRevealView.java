@@ -1,4 +1,4 @@
-package com.xxshhh.android.android_demo.function.practice.animation.demo.importantMsg.dialog.view;
+package com.xxshhh.android.android_demo.function.practice.animation.demo.importantMsg.dialog;
 
 import android.animation.Animator;
 import android.animation.ObjectAnimator;

@@ -1,4 +1,4 @@
-package com.xxshhh.android.android_demo.function.practice.animation.demo.importantMsg.avatar.view;
+package com.xxshhh.android.android_demo.function.practice.animation.demo.importantMsg.avatar;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
@@ -35,6 +35,20 @@ public class ImportantMsgAvatarView extends RelativeLayout {
         super(context);
         LayoutInflater.from(context).inflate(R.layout.animation_view_important_msg_avatar, this, true);
         ButterKnife.bind(this);
+    }
+
+    /**
+     * 展示用户头像
+     */
+    public void displayAvatar(String uri) {
+
+    }
+
+    /**
+     * 设置点击事件
+     */
+    public void setClickEvent(OnClickListener onClickListener) {
+        setOnClickListener(onClickListener);
     }
 
     /**

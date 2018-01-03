@@ -1,4 +1,4 @@
-package com.xxshhh.android.android_demo.function.practice.animation.demo.importantMsg.dialog.view;
+package com.xxshhh.android.android_demo.function.practice.animation.demo.importantMsg.dialog;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
@@ -46,13 +46,6 @@ public class ImportantMsgDialogView extends RelativeLayout {
     }
 
     /**
-     * 设置确定按钮点击事件
-     */
-    public void setConfirmClickListener(OnClickListener onClickListener) {
-        mTvConfirm.setOnClickListener(onClickListener);
-    }
-
-    /**
      * 获取Logo的中心位置
      */
     public int[] getLogoCenterLocation() {
@@ -75,6 +68,13 @@ public class ImportantMsgDialogView extends RelativeLayout {
      */
     public int getLogoHeight() {
         return mIvLogo.getHeight();
+    }
+
+    /**
+     * 设置确定事件
+     */
+    public void setConfirmEvent(OnClickListener onClickListener) {
+        mTvConfirm.setOnClickListener(onClickListener);
     }
 
     /**
@@ -205,7 +205,7 @@ public class ImportantMsgDialogView extends RelativeLayout {
 
     private Animator getDialogAlphaAnimation() {
         ObjectAnimator animator = ObjectAnimator.ofFloat(mLlDialog, View.ALPHA, 1, 0);
-        animator.setDuration(250);
+        animator.setDuration(100);
         animator.setInterpolator(new DecelerateInterpolator());
         return animator;
     }
