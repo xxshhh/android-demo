@@ -13,10 +13,10 @@ import android.widget.FrameLayout;
 
 import com.xxshhh.android.android_demo.common.activity.CommonContainerActivity;
 import com.xxshhh.android.android_demo.function.practice.animation.demo.importantMsg.AnimationImportantMsg2Fragment;
-import com.xxshhh.android.android_demo.function.practice.animation.demo.importantMsg.avatar.ImportantMsgAvatarView;
-import com.xxshhh.android.android_demo.function.practice.animation.demo.importantMsg.dialog.CircularRevealView;
-import com.xxshhh.android.android_demo.function.practice.animation.demo.importantMsg.dialog.ImportantMsgDialogView;
 import com.xxshhh.android.android_demo.function.practice.animation.demo.importantMsg.manager.IAnimationImportantMsgManager;
+import com.xxshhh.android.android_demo.function.practice.animation.demo.importantMsg.view.CircularRevealView;
+import com.xxshhh.android.android_demo.function.practice.animation.demo.importantMsg.view.ImportantMsgAvatarView;
+import com.xxshhh.android.android_demo.function.practice.animation.demo.importantMsg.view.ImportantMsgDialogView;
 
 /**
  * 重要消息动画管理类
