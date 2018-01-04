@@ -168,8 +168,16 @@ public class ImportantMsgDialogView extends RelativeLayout {
         float startY = 0;
         float endX = endLoc[0] - startLoc[0];
         float endY = endLoc[1] - startLoc[1];
-        float controlX = startX;
-        float controlY = endY;
+        // 根据起点和终点的上下位置来决定控制点的位置
+        float controlX;
+        float controlY;
+        if (startY > endY) {
+            controlX = startX;
+            controlY = endY;
+        } else {
+            controlX = endX;
+            controlY = startY;
+        }
 
         // 二阶贝塞尔曲线
         Path path = new Path();
