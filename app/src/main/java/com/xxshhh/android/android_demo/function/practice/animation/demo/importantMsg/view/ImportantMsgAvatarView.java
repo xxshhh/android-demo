@@ -38,10 +38,10 @@ public class ImportantMsgAvatarView extends RelativeLayout {
     }
 
     /**
-     * 展示用户头像
+     * 设置数据
      */
-    public void displayAvatar(String uri) {
-
+    public void setData(Object data) {
+        // ...
     }
 
     /**

@@ -53,6 +53,7 @@ public class ImportantMsgChatContainer implements IImportantMsgChatContainer {
     private void initDialogView(Object data, final View endLogoView) {
         final CircularRevealView revealView = getCircularRevealView();
         final ImportantMsgDialogView dialogView = getDialogView(data);
+        dialogView.setData(data);
         // 监听绘制
         dialogView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
             @Override
@@ -83,7 +84,9 @@ public class ImportantMsgChatContainer implements IImportantMsgChatContainer {
                         endLogoView.getLocationOnScreen(endLoc);
                         endLoc[0] += endLogoView.getWidth() / 2;
                         endLoc[1] += endLogoView.getHeight() / 2;
-                        Animator transformAnimation = dialogView.getTransformAnimation(endLoc, 1, (float) endLogoView.getWidth() / (float) dialogView.getLogoWidth());
+                        int startScale = 1;
+                        float endScale = (float) endLogoView.getWidth() / (float) dialogView.getLogoWidth();
+                        Animator transformAnimation = dialogView.getTransformAnimation(endLoc, startScale, endScale);
                         transformAnimation.addListener(new AnimatorListenerAdapter() {
                             @Override
                             public void onAnimationStart(Animator animation) {

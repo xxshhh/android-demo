@@ -46,6 +46,13 @@ public class ImportantMsgDialogView extends RelativeLayout {
     }
 
     /**
+     * 设置数据
+     */
+    public void setData(Object data) {
+        // ...
+    }
+
+    /**
      * 获取Logo的中心位置
      */
     public int[] getLogoCenterLocation() {

@@ -54,6 +54,7 @@ public class ImportantMsgMainContainer implements IImportantMsgMainContainer {
 
     private void initAvatarView(final Object data) {
         final ImportantMsgAvatarView avatarView = getAvatarView(data);
+        avatarView.setData(data);
         // 监听绘制
         avatarView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
             @Override
@@ -67,13 +68,15 @@ public class ImportantMsgMainContainer implements IImportantMsgMainContainer {
                     @Override
                     public void onClick(View v) {
                         final ImportantMsgDialogView dialogView = getDialogView(data);
+                        dialogView.setData(data);
                         // 监听绘制
                         dialogView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
                             @Override
                             public void onGlobalLayout() {
                                 dialogView.getViewTreeObserver().removeGlobalOnLayoutListener(this);
                                 // 变换动画
-                                Animator transformAnimation = avatarView.getTransformAnimation(dialogView.getLogoCenterLocation());
+                                int[] endLoc = dialogView.getLogoCenterLocation();
+                                Animator transformAnimation = avatarView.getTransformAnimation(endLoc);
                                 transformAnimation.addListener(new AnimatorListenerAdapter() {
                                     @Override
                                     public void onAnimationStart(Animator animation) {
@@ -88,7 +91,9 @@ public class ImportantMsgMainContainer implements IImportantMsgMainContainer {
                                     }
                                 });
                                 // 过渡动画
-                                Animator transitionAnimation = dialogView.getTransitionAnimation((float) avatarView.getWidth() / (float) dialogView.getLogoWidth(), 1);
+                                float startScale = (float) avatarView.getWidth() / (float) dialogView.getLogoWidth();
+                                int endScale = 1;
+                                Animator transitionAnimation = dialogView.getTransitionAnimation(startScale, endScale);
                                 transitionAnimation.addListener(new AnimatorListenerAdapter() {
                                     @Override
                                     public void onAnimationStart(Animator animation) {
