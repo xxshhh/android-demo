@@ -22,27 +22,37 @@ import com.xxshhh.android.android_demo.function.practice.animation.demo.importan
 public class ImportantMsgChatContainer implements IImportantMsgChatContainer {
 
     private Activity mActivity;
+    private ViewGroup mViewGroup;
+
     private FrameLayout mFrameLayout;
 
     public ImportantMsgChatContainer(@NonNull Activity activity) {
         mActivity = activity;
+        mViewGroup = (ViewGroup) activity.getWindow().getDecorView().findViewById(android.R.id.content);
     }
 
     @Override
-    public void addDialogView(final View endLogoView) {
+    public void showDialogView(Object data, View endLogoView) {
         if (mFrameLayout == null) {
-            mFrameLayout = initFrameLayout();
+            mFrameLayout = getFrameLayout();
         }
-        // 添加圆形揭露View
-        final CircularRevealView revealView = new CircularRevealView(mActivity);
-        revealView.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
-        mFrameLayout.addView(revealView);
-        // 添加弹窗View
-        final ImportantMsgDialogView dialogView = new ImportantMsgDialogView(mActivity);
-        FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        params.gravity = Gravity.CENTER;
-        dialogView.setLayoutParams(params);
-        mFrameLayout.addView(dialogView);
+        mFrameLayout.removeAllViews();
+        initDialogView(data, endLogoView);
+    }
+
+    @Override
+    public void destroy() {
+        if (mFrameLayout == null) {
+            return;
+        }
+        mFrameLayout.removeAllViews();
+        mViewGroup.removeView(mFrameLayout);
+        mFrameLayout = null;
+    }
+
+    private void initDialogView(Object data, final View endLogoView) {
+        final CircularRevealView revealView = getCircularRevealView();
+        final ImportantMsgDialogView dialogView = getDialogView(data);
         // 监听绘制
         dialogView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
             @Override
@@ -99,13 +109,29 @@ public class ImportantMsgChatContainer implements IImportantMsgChatContainer {
         });
     }
 
-    private FrameLayout initFrameLayout() {
-        // 获取容器
-        ViewGroup viewGroup = (ViewGroup) mActivity.getWindow().getDecorView().findViewById(android.R.id.content);
-        // 创建并添加帧布局
+    private FrameLayout getFrameLayout() {
+        // 添加帧布局
         FrameLayout frameLayout = new FrameLayout(mActivity);
         frameLayout.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
-        viewGroup.addView(frameLayout);
+        mViewGroup.addView(frameLayout);
         return frameLayout;
+    }
+
+    private CircularRevealView getCircularRevealView() {
+        // 添加圆形揭露View
+        CircularRevealView revealView = new CircularRevealView(mActivity);
+        revealView.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+        mFrameLayout.addView(revealView);
+        return revealView;
+    }
+
+    private ImportantMsgDialogView getDialogView(Object data) {
+        // 添加弹窗View
+        ImportantMsgDialogView dialogView = new ImportantMsgDialogView(mActivity);
+        FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        params.gravity = Gravity.CENTER;
+        dialogView.setLayoutParams(params);
+        mFrameLayout.addView(dialogView);
+        return dialogView;
     }
 }

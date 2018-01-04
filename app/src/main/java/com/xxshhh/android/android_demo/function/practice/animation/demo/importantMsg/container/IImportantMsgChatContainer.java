@@ -8,6 +8,8 @@ import android.view.View;
  */
 public interface IImportantMsgChatContainer {
 
-    void addDialogView(View endLogoView);
+    void showDialogView(Object data, View endLogoView);
+
+    void destroy();
 
 }

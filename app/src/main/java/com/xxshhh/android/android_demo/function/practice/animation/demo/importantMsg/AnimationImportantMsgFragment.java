@@ -21,6 +21,8 @@ public class AnimationImportantMsgFragment extends BaseFragment {
     @BindView(R.id.btn_click)
     Button mBtnClick;
 
+    private IImportantMsgMainContainer mContainer;
+
     @Override
     protected int getLayoutResID() {
         return R.layout.animation_fragment_important_msg;
@@ -42,7 +44,17 @@ public class AnimationImportantMsgFragment extends BaseFragment {
     }
 
     private void initAvatar() {
-        IImportantMsgMainContainer container = new ImportantMsgMainContainer(getActivity());
-        container.addAvatarView();
+        if (mContainer == null) {
+            mContainer = new ImportantMsgMainContainer(getActivity());
+        }
+        mContainer.showAvatarView("");
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        if (mContainer != null) {
+            mContainer.destroy();
+        }
     }
 }

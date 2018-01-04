@@ -24,24 +24,36 @@ import com.xxshhh.android.android_demo.function.practice.animation.demo.importan
 public class ImportantMsgMainContainer implements IImportantMsgMainContainer {
 
     private Activity mActivity;
+    private ViewGroup mViewGroup;
+
     private FrameLayout mFrameLayout;
 
     public ImportantMsgMainContainer(@NonNull Activity activity) {
         mActivity = activity;
+        mViewGroup = (ViewGroup) activity.getWindow().getDecorView().findViewById(android.R.id.content);
     }
 
     @Override
-    public void addAvatarView() {
+    public void showAvatarView(Object data) {
         if (mFrameLayout == null) {
-            mFrameLayout = initFrameLayout();
+            mFrameLayout = getFrameLayout();
         }
-        // 添加头像View
-        final ImportantMsgAvatarView avatarView = new ImportantMsgAvatarView(mActivity);
-        FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        params.topMargin = 1500;
-        params.leftMargin = 100;
-        avatarView.setLayoutParams(params);
-        mFrameLayout.addView(avatarView);
+        mFrameLayout.removeAllViews();
+        initAvatarView(data);
+    }
+
+    @Override
+    public void destroy() {
+        if (mFrameLayout == null) {
+            return;
+        }
+        mFrameLayout.removeAllViews();
+        mViewGroup.removeView(mFrameLayout);
+        mFrameLayout = null;
+    }
+
+    private void initAvatarView(final Object data) {
+        final ImportantMsgAvatarView avatarView = getAvatarView(data);
         // 监听绘制
         avatarView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
             @Override
@@ -54,13 +66,7 @@ public class ImportantMsgMainContainer implements IImportantMsgMainContainer {
                 avatarView.setClickEvent(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        // 添加弹窗View
-                        final ImportantMsgDialogView dialogView = new ImportantMsgDialogView(mActivity);
-                        FrameLayout.LayoutParams params2 = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-                        params2.gravity = Gravity.CENTER;
-                        dialogView.setLayoutParams(params2);
-                        dialogView.setVisibility(View.INVISIBLE);
-                        mFrameLayout.addView(dialogView);
+                        final ImportantMsgDialogView dialogView = getDialogView(data);
                         // 监听绘制
                         dialogView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
                             @Override
@@ -109,13 +115,33 @@ public class ImportantMsgMainContainer implements IImportantMsgMainContainer {
         });
     }
 
-    private FrameLayout initFrameLayout() {
-        // 获取容器
-        ViewGroup viewGroup = (ViewGroup) mActivity.getWindow().getDecorView().findViewById(android.R.id.content);
-        // 创建并添加帧布局
+    private FrameLayout getFrameLayout() {
+        // 添加帧布局
         FrameLayout frameLayout = new FrameLayout(mActivity);
         frameLayout.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
-        viewGroup.addView(frameLayout);
+        mViewGroup.addView(frameLayout);
         return frameLayout;
+    }
+
+    private ImportantMsgAvatarView getAvatarView(Object data) {
+        // 添加头像View
+        ImportantMsgAvatarView avatarView = new ImportantMsgAvatarView(mActivity);
+        FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        params.topMargin = 1500;
+        params.leftMargin = 100;
+        avatarView.setLayoutParams(params);
+        mFrameLayout.addView(avatarView);
+        return avatarView;
+    }
+
+    private ImportantMsgDialogView getDialogView(Object data) {
+        // 添加弹窗View
+        ImportantMsgDialogView dialogView = new ImportantMsgDialogView(mActivity);
+        FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        params.gravity = Gravity.CENTER;
+        dialogView.setLayoutParams(params);
+        dialogView.setVisibility(View.INVISIBLE); // 默认不可见
+        mFrameLayout.addView(dialogView);
+        return dialogView;
     }
 }

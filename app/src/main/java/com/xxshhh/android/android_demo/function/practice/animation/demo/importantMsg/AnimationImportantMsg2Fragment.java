@@ -28,6 +28,8 @@ public class AnimationImportantMsg2Fragment extends BaseFragment {
     @BindView(R.id.iv_logo)
     ImageView mIvLogo;
 
+    private IImportantMsgChatContainer mContainer;
+
     @Override
     protected int getLayoutResID() {
         return R.layout.animation_fragment_important_msg2;
@@ -44,7 +46,17 @@ public class AnimationImportantMsg2Fragment extends BaseFragment {
     }
 
     private void initDialog() {
-        IImportantMsgChatContainer container = new ImportantMsgChatContainer(getActivity());
-        container.addDialogView(mIvLogo);
+        if (mContainer == null) {
+            mContainer = new ImportantMsgChatContainer(getActivity());
+        }
+        mContainer.showDialogView("", mIvLogo);
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        if (mContainer != null) {
+            mContainer.destroy();
+        }
     }
 }

@@ -6,6 +6,8 @@ package com.xxshhh.android.android_demo.function.practice.animation.demo.importa
  */
 public interface IImportantMsgMainContainer {
 
-    void addAvatarView();
+    void showAvatarView(Object data);
+
+    void destroy();
 
 }
