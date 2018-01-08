@@ -4,8 +4,9 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
 import android.app.Activity;
+import android.os.Looper;
+import android.os.MessageQueue;
 import android.support.annotation.NonNull;
-import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
@@ -70,10 +71,9 @@ public class ImportantMsgMainContainer implements IImportantMsgMainContainer {
                         final ImportantMsgDialogView dialogView = getDialogView(data);
                         dialogView.setData(data);
                         // 监听绘制
-                        dialogView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+                        Looper.myQueue().addIdleHandler(new MessageQueue.IdleHandler() {
                             @Override
-                            public void onGlobalLayout() {
-                                dialogView.getViewTreeObserver().removeGlobalOnLayoutListener(this);
+                            public boolean queueIdle() {
                                 // 变换动画
                                 int[] endLoc = dialogView.getLogoCenterLocation();
                                 Animator transformAnimation = avatarView.getTransformAnimation(endLoc);
@@ -98,7 +98,7 @@ public class ImportantMsgMainContainer implements IImportantMsgMainContainer {
                                     @Override
                                     public void onAnimationStart(Animator animation) {
                                         super.onAnimationStart(animation);
-                                        dialogView.setVisibility(View.VISIBLE);
+                                        dialogView.show();
                                     }
 
                                     @Override
@@ -112,6 +112,7 @@ public class ImportantMsgMainContainer implements IImportantMsgMainContainer {
                                 AnimatorSet animatorSet = new AnimatorSet();
                                 animatorSet.playSequentially(transformAnimation, transitionAnimation);
                                 animatorSet.start();
+                                return false;
                             }
                         });
                     }
@@ -142,11 +143,8 @@ public class ImportantMsgMainContainer implements IImportantMsgMainContainer {
     private ImportantMsgDialogView getDialogView(Object data) {
         // 添加弹窗View
         ImportantMsgDialogView dialogView = new ImportantMsgDialogView(mActivity);
-        FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        params.gravity = Gravity.CENTER;
-        dialogView.setLayoutParams(params);
-        dialogView.setVisibility(View.INVISIBLE); // 默认不可见
-        mFrameLayout.addView(dialogView);
+        dialogView.show();
+        dialogView.hide(); // 默认不可见
         return dialogView;
     }
 }

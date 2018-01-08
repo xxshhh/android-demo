@@ -4,11 +4,11 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
 import android.app.Activity;
+import android.os.Looper;
+import android.os.MessageQueue;
 import android.support.annotation.NonNull;
-import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.ViewTreeObserver;
 import android.widget.FrameLayout;
 
 import com.xxshhh.android.android_demo.function.practice.animation.demo.importantMsg.container.IImportantMsgChatContainer;
@@ -55,10 +55,9 @@ public class ImportantMsgChatContainer implements IImportantMsgChatContainer {
         final ImportantMsgDialogView dialogView = getDialogView(data);
         dialogView.setData(data);
         // 监听绘制
-        dialogView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+        Looper.myQueue().addIdleHandler(new MessageQueue.IdleHandler() {
             @Override
-            public void onGlobalLayout() {
-                dialogView.getViewTreeObserver().removeGlobalOnLayoutListener(this);
+            public boolean queueIdle() {
                 // 展示动画
                 Animator showAnimation = dialogView.getShowAnimation();
                 // 揭露动画
@@ -98,6 +97,7 @@ public class ImportantMsgChatContainer implements IImportantMsgChatContainer {
                             public void onAnimationEnd(Animator animation) {
                                 super.onAnimationEnd(animation);
                                 endLogoView.setVisibility(View.VISIBLE);
+                                dialogView.dismiss();
                             }
                         });
                         // 渐变背景动画
@@ -108,6 +108,7 @@ public class ImportantMsgChatContainer implements IImportantMsgChatContainer {
                         animator.start();
                     }
                 });
+                return false;
             }
         });
     }
@@ -131,10 +132,7 @@ public class ImportantMsgChatContainer implements IImportantMsgChatContainer {
     private ImportantMsgDialogView getDialogView(Object data) {
         // 添加弹窗View
         ImportantMsgDialogView dialogView = new ImportantMsgDialogView(mActivity);
-        FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        params.gravity = Gravity.CENTER;
-        dialogView.setLayoutParams(params);
-        mFrameLayout.addView(dialogView);
+        dialogView.show();
         return dialogView;
     }
 }

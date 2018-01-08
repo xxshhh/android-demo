@@ -6,11 +6,15 @@ import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.animation.PropertyValuesHolder;
 import android.animation.ValueAnimator;
+import android.app.Dialog;
 import android.content.Context;
 import android.graphics.Path;
 import android.graphics.PathMeasure;
-import android.view.LayoutInflater;
+import android.os.Bundle;
 import android.view.View;
+import android.view.ViewGroup;
+import android.view.Window;
+import android.view.WindowManager;
 import android.view.animation.DecelerateInterpolator;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -27,8 +31,10 @@ import butterknife.ButterKnife;
  * 重要消息弹窗View
  * Created by xwh on 2017/12/22.
  */
-public class ImportantMsgDialogView extends RelativeLayout {
+public class ImportantMsgDialogView extends Dialog {
 
+    @BindView(R.id.rl_root)
+    RelativeLayout mRlRoot;
     @BindView(R.id.tv_title)
     TextView mTvTitle;
     @BindView(R.id.rl_container)
@@ -42,7 +48,28 @@ public class ImportantMsgDialogView extends RelativeLayout {
 
     public ImportantMsgDialogView(Context context) {
         super(context);
-        LayoutInflater.from(context).inflate(R.layout.animation_view_important_msg_dialog, this, true);
+    }
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        init();
+    }
+
+    private void init() {
+        requestWindowFeature(Window.FEATURE_NO_TITLE);
+        setContentView(R.layout.animation_view_important_msg_dialog);
+        if (getWindow() != null) {
+            getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+            getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+            // 设置背景不变暗
+            WindowManager.LayoutParams lp = getWindow().getAttributes();
+            lp.dimAmount = 0f;
+            getWindow().setAttributes(lp);
+            getWindow().addFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND);
+        }
+        setCanceledOnTouchOutside(false);
+        setCancelable(true);
         ButterKnife.bind(this);
     }
 
@@ -84,7 +111,7 @@ public class ImportantMsgDialogView extends RelativeLayout {
     /**
      * 设置确定事件
      */
-    public void setConfirmEvent(OnClickListener onClickListener) {
+    public void setConfirmEvent(View.OnClickListener onClickListener) {
         mTvConfirm.setOnClickListener(onClickListener);
     }
 
@@ -126,8 +153,8 @@ public class ImportantMsgDialogView extends RelativeLayout {
             @Override
             public void onAnimationStart(Animator animation) {
                 super.onAnimationStart(animation);
-                mIvLogo.setVisibility(VISIBLE);
-                mLlDialog.setVisibility(INVISIBLE);
+                mIvLogo.setVisibility(View.VISIBLE);
+                mLlDialog.setVisibility(View.INVISIBLE);
             }
         });
         return animator;
@@ -145,18 +172,18 @@ public class ImportantMsgDialogView extends RelativeLayout {
             @Override
             public void onAnimationStart(Animator animation) {
                 super.onAnimationStart(animation);
-                setPivotY(0);
+                mRlRoot.setPivotY(0);
                 // 隐藏内容
-                mTvTitle.setVisibility(INVISIBLE);
-                mRlContainer.setVisibility(INVISIBLE);
+                mTvTitle.setVisibility(View.INVISIBLE);
+                mRlContainer.setVisibility(View.INVISIBLE);
             }
 
             @Override
             public void onAnimationEnd(Animator animation) {
                 super.onAnimationEnd(animation);
                 // 显示内容
-                mTvTitle.setVisibility(VISIBLE);
-                mRlContainer.setVisibility(VISIBLE);
+                mTvTitle.setVisibility(View.VISIBLE);
+                mRlContainer.setVisibility(View.VISIBLE);
             }
         });
         return animator;
@@ -193,13 +220,13 @@ public class ImportantMsgDialogView extends RelativeLayout {
             @Override
             public void onAnimationStart(Animator animation) {
                 super.onAnimationStart(animation);
-                mIvLogo.setVisibility(VISIBLE);
+                mIvLogo.setVisibility(View.VISIBLE);
             }
 
             @Override
             public void onAnimationEnd(Animator animation) {
                 super.onAnimationEnd(animation);
-                mIvLogo.setVisibility(INVISIBLE);
+                mIvLogo.setVisibility(View.INVISIBLE);
             }
         });
         final float[] currentPos = new float[2];
@@ -208,8 +235,8 @@ public class ImportantMsgDialogView extends RelativeLayout {
             public void onAnimationUpdate(ValueAnimator animation) {
                 float value = (float) animation.getAnimatedValue();
                 pathMeasure.getPosTan(value, currentPos, null);
-                setTranslationX(currentPos[0]);
-                setTranslationY(currentPos[1]);
+                mRlRoot.setTranslationX(currentPos[0]);
+                mRlRoot.setTranslationY(currentPos[1]);
 
                 float fraction = animation.getAnimatedFraction();
                 float currentScale = (endScale - startScale) * fraction + startScale;
