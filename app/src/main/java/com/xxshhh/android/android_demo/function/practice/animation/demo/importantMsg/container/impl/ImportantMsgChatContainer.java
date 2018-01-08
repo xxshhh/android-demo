@@ -12,8 +12,8 @@ import android.view.ViewTreeObserver;
 import android.widget.FrameLayout;
 
 import com.xxshhh.android.android_demo.function.practice.animation.demo.importantMsg.container.IImportantMsgChatContainer;
-import com.xxshhh.android.android_demo.function.practice.animation.demo.importantMsg.view.CircularRevealView;
-import com.xxshhh.android.android_demo.function.practice.animation.demo.importantMsg.view.ImportantMsgDialogView;
+import com.xxshhh.android.android_demo.function.practice.animation.demo.importantMsg.view.animation.CircularRevealView;
+import com.xxshhh.android.android_demo.function.practice.animation.demo.importantMsg.view.animation.ImportantMsgDialogView;
 
 /**
  * 重要消息聊天界面容器

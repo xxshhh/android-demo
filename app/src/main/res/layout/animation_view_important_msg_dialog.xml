@@ -30,12 +30,6 @@
             android:layout_marginRight="15dp"
             android:layout_marginTop="21dp">
 
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/place_text_long"
-                android:textColor="#333333"
-                android:textSize="15dp"/>
         </RelativeLayout>
 
         <View

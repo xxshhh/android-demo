@@ -14,8 +14,8 @@ import android.widget.FrameLayout;
 import com.xxshhh.android.android_demo.common.activity.CommonContainerActivity;
 import com.xxshhh.android.android_demo.function.practice.animation.demo.importantMsg.AnimationImportantMsg2Fragment;
 import com.xxshhh.android.android_demo.function.practice.animation.demo.importantMsg.container.IImportantMsgMainContainer;
-import com.xxshhh.android.android_demo.function.practice.animation.demo.importantMsg.view.ImportantMsgAvatarView;
-import com.xxshhh.android.android_demo.function.practice.animation.demo.importantMsg.view.ImportantMsgDialogView;
+import com.xxshhh.android.android_demo.function.practice.animation.demo.importantMsg.view.animation.ImportantMsgAvatarView;
+import com.xxshhh.android.android_demo.function.practice.animation.demo.importantMsg.view.animation.ImportantMsgDialogView;
 
 /**
  * 重要消息主界面容器

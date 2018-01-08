@@ -1,4 +1,4 @@
-package com.xxshhh.android.android_demo.function.practice.animation.demo.importantMsg.view;
+package com.xxshhh.android.android_demo.function.practice.animation.demo.importantMsg.view.animation;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
@@ -18,6 +18,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.xxshhh.android.android_demo.R;
+import com.xxshhh.android.android_demo.function.practice.animation.demo.importantMsg.view.msg.ImportantMsgView_Text;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -50,6 +51,9 @@ public class ImportantMsgDialogView extends RelativeLayout {
      */
     public void setData(Object data) {
         // ...
+        ImportantMsgView_Text textView = new ImportantMsgView_Text(getContext());
+        textView.setData(data);
+        mRlContainer.addView(textView);
     }
 
     /**
