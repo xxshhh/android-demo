@@ -1,4 +1,4 @@
-package com.xxshhh.android.android_demo.function.practice.animation.demo.importantMsg.view.animation;
+package com.xxshhh.android.android_demo.function.practice.animation.demo.importantMsg.widget;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
@@ -42,6 +42,7 @@ public class ImportantMsgAvatarView extends RelativeLayout {
      */
     public void setData(Object data) {
         // ...
+        mIvAvatar.setImageResource(R.drawable.animation_demo_default_avatar);
     }
 
     /**
@@ -127,6 +128,13 @@ public class ImportantMsgAvatarView extends RelativeLayout {
         final PathMeasure pathMeasure = new PathMeasure(path, false);
         ValueAnimator animator = ValueAnimator.ofFloat(pathMeasure.getLength());
         final float[] currentPos = new float[2];
+        animator.addListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                super.onAnimationEnd(animation);
+                setVisibility(INVISIBLE);
+            }
+        });
         animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
             @Override
             public void onAnimationUpdate(ValueAnimator animation) {

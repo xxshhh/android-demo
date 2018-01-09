@@ -1,8 +1,7 @@
-package com.xxshhh.android.android_demo.function.practice.animation.demo.importantMsg.view.animation;
+package com.xxshhh.android.android_demo.function.practice.animation.demo.importantMsg.widget;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
-import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.animation.PropertyValuesHolder;
 import android.animation.ValueAnimator;
@@ -10,7 +9,6 @@ import android.app.Dialog;
 import android.content.Context;
 import android.graphics.Path;
 import android.graphics.PathMeasure;
-import android.os.Bundle;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
@@ -22,7 +20,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.xxshhh.android.android_demo.R;
-import com.xxshhh.android.android_demo.function.practice.animation.demo.importantMsg.view.msg.ImportantMsgView_Text;
+import com.xxshhh.android.android_demo.function.practice.animation.demo.importantMsg.msg.ImportantMsgView_Text;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -35,24 +33,19 @@ public class ImportantMsgDialogView extends Dialog {
 
     @BindView(R.id.rl_root)
     RelativeLayout mRlRoot;
+    @BindView(R.id.ll_dialog)
+    LinearLayout mLlDialog;
     @BindView(R.id.tv_title)
     TextView mTvTitle;
     @BindView(R.id.rl_container)
     RelativeLayout mRlContainer;
     @BindView(R.id.tv_confirm)
     TextView mTvConfirm;
-    @BindView(R.id.ll_dialog)
-    LinearLayout mLlDialog;
     @BindView(R.id.iv_logo)
     ImageView mIvLogo;
 
     public ImportantMsgDialogView(Context context) {
         super(context);
-    }
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
         init();
     }
 
@@ -71,6 +64,13 @@ public class ImportantMsgDialogView extends Dialog {
         setCanceledOnTouchOutside(false);
         setCancelable(true);
         ButterKnife.bind(this);
+    }
+
+    /**
+     * 设置可见性
+     */
+    public void setVisibility(int visibility) {
+        mRlRoot.setVisibility(visibility);
     }
 
     /**
@@ -133,12 +133,7 @@ public class ImportantMsgDialogView extends Dialog {
      * 获取变换动画
      */
     public Animator getTransformAnimation(int[] endLoc, float startScale, float endScale) {
-        Animator logoBezierCurveAndScaleAnimation = getLogoBezierCurveAndScaleAnimation(endLoc, startScale, endScale);
-        Animator dialogAlphaAnimation = getDialogAlphaAnimation();
-
-        AnimatorSet animatorSet = new AnimatorSet();
-        animatorSet.playTogether(logoBezierCurveAndScaleAnimation, dialogAlphaAnimation);
-        return animatorSet;
+        return getLogoBezierCurveAndScaleAnimation(endLoc, startScale, endScale);
     }
 
     private Animator getLogoScaleAnimation(float startScale, float endScale) {
@@ -153,6 +148,7 @@ public class ImportantMsgDialogView extends Dialog {
             @Override
             public void onAnimationStart(Animator animation) {
                 super.onAnimationStart(animation);
+                setVisibility(View.VISIBLE);
                 mIvLogo.setVisibility(View.VISIBLE);
                 mLlDialog.setVisibility(View.INVISIBLE);
             }
@@ -221,12 +217,14 @@ public class ImportantMsgDialogView extends Dialog {
             public void onAnimationStart(Animator animation) {
                 super.onAnimationStart(animation);
                 mIvLogo.setVisibility(View.VISIBLE);
+                mLlDialog.setVisibility(View.INVISIBLE);
             }
 
             @Override
             public void onAnimationEnd(Animator animation) {
                 super.onAnimationEnd(animation);
                 mIvLogo.setVisibility(View.INVISIBLE);
+                mLlDialog.setVisibility(View.INVISIBLE);
             }
         });
         final float[] currentPos = new float[2];
@@ -245,13 +243,6 @@ public class ImportantMsgDialogView extends Dialog {
             }
         });
         animator.setDuration(500);
-        animator.setInterpolator(new DecelerateInterpolator());
-        return animator;
-    }
-
-    private Animator getDialogAlphaAnimation() {
-        ObjectAnimator animator = ObjectAnimator.ofFloat(mLlDialog, View.ALPHA, 1, 0);
-        animator.setDuration(100);
         animator.setInterpolator(new DecelerateInterpolator());
         return animator;
     }

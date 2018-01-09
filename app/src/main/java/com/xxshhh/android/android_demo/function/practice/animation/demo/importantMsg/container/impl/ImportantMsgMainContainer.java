@@ -4,8 +4,7 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
 import android.app.Activity;
-import android.os.Looper;
-import android.os.MessageQueue;
+import android.content.DialogInterface;
 import android.support.annotation.NonNull;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,8 +14,8 @@ import android.widget.FrameLayout;
 import com.xxshhh.android.android_demo.common.activity.CommonContainerActivity;
 import com.xxshhh.android.android_demo.function.practice.animation.demo.importantMsg.AnimationImportantMsg2Fragment;
 import com.xxshhh.android.android_demo.function.practice.animation.demo.importantMsg.container.IImportantMsgMainContainer;
-import com.xxshhh.android.android_demo.function.practice.animation.demo.importantMsg.view.animation.ImportantMsgAvatarView;
-import com.xxshhh.android.android_demo.function.practice.animation.demo.importantMsg.view.animation.ImportantMsgDialogView;
+import com.xxshhh.android.android_demo.function.practice.animation.demo.importantMsg.widget.ImportantMsgAvatarView;
+import com.xxshhh.android.android_demo.function.practice.animation.demo.importantMsg.widget.ImportantMsgDialogView;
 
 /**
  * 重要消息主界面容器
@@ -55,8 +54,6 @@ public class ImportantMsgMainContainer implements IImportantMsgMainContainer {
 
     private void initAvatarView(final Object data) {
         final ImportantMsgAvatarView avatarView = getAvatarView(data);
-        avatarView.setData(data);
-        // 监听绘制
         avatarView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
             @Override
             public void onGlobalLayout() {
@@ -69,15 +66,21 @@ public class ImportantMsgMainContainer implements IImportantMsgMainContainer {
                     @Override
                     public void onClick(View v) {
                         final ImportantMsgDialogView dialogView = getDialogView(data);
-                        dialogView.setData(data);
-                        // 监听绘制
-                        Looper.myQueue().addIdleHandler(new MessageQueue.IdleHandler() {
+                        dialogView.setVisibility(View.INVISIBLE); // 默认不可见
+                        dialogView.setOnShowListener(new DialogInterface.OnShowListener() {
                             @Override
-                            public boolean queueIdle() {
+                            public void onShow(DialogInterface dialog) {
                                 // 变换动画
                                 int[] endLoc = dialogView.getLogoCenterLocation();
                                 Animator transformAnimation = avatarView.getTransformAnimation(endLoc);
-                                transformAnimation.addListener(new AnimatorListenerAdapter() {
+                                // 过渡动画
+                                float startScale = (float) avatarView.getWidth() / (float) dialogView.getLogoWidth();
+                                int endScale = 1;
+                                Animator transitionAnimation = dialogView.getTransitionAnimation(startScale, endScale);
+                                // 开始播放动画
+                                AnimatorSet animatorSet = new AnimatorSet();
+                                animatorSet.playSequentially(transformAnimation, transitionAnimation);
+                                animatorSet.addListener(new AnimatorListenerAdapter() {
                                     @Override
                                     public void onAnimationStart(Animator animation) {
                                         super.onAnimationStart(animation);
@@ -87,36 +90,17 @@ public class ImportantMsgMainContainer implements IImportantMsgMainContainer {
                                     @Override
                                     public void onAnimationEnd(Animator animation) {
                                         super.onAnimationEnd(animation);
-                                        avatarView.setVisibility(View.INVISIBLE);
-                                    }
-                                });
-                                // 过渡动画
-                                float startScale = (float) avatarView.getWidth() / (float) dialogView.getLogoWidth();
-                                int endScale = 1;
-                                Animator transitionAnimation = dialogView.getTransitionAnimation(startScale, endScale);
-                                transitionAnimation.addListener(new AnimatorListenerAdapter() {
-                                    @Override
-                                    public void onAnimationStart(Animator animation) {
-                                        super.onAnimationStart(animation);
-                                        dialogView.show();
-                                    }
-
-                                    @Override
-                                    public void onAnimationEnd(Animator animation) {
-                                        super.onAnimationEnd(animation);
                                         CommonContainerActivity.start(mActivity, AnimationImportantMsg2Fragment.class);
                                         mActivity.overridePendingTransition(0, 0);
                                     }
                                 });
-                                // 开始播放动画
-                                AnimatorSet animatorSet = new AnimatorSet();
-                                animatorSet.playSequentially(transformAnimation, transitionAnimation);
                                 animatorSet.start();
-                                return false;
                             }
                         });
+                        dialogView.show();
                     }
                 });
+
             }
         });
     }
@@ -132,6 +116,7 @@ public class ImportantMsgMainContainer implements IImportantMsgMainContainer {
     private ImportantMsgAvatarView getAvatarView(Object data) {
         // 添加头像View
         ImportantMsgAvatarView avatarView = new ImportantMsgAvatarView(mActivity);
+        avatarView.setData(data);
         FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         params.topMargin = 1500;
         params.leftMargin = 100;
@@ -143,8 +128,7 @@ public class ImportantMsgMainContainer implements IImportantMsgMainContainer {
     private ImportantMsgDialogView getDialogView(Object data) {
         // 添加弹窗View
         ImportantMsgDialogView dialogView = new ImportantMsgDialogView(mActivity);
-        dialogView.show();
-        dialogView.hide(); // 默认不可见
+        dialogView.setData(data);
         return dialogView;
     }
 }

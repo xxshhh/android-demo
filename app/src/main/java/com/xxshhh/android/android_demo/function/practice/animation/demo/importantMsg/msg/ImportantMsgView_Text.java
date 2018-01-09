@@ -1,4 +1,4 @@
-package com.xxshhh.android.android_demo.function.practice.animation.demo.importantMsg.view.msg;
+package com.xxshhh.android.android_demo.function.practice.animation.demo.importantMsg.msg;
 
 import android.content.Context;
 import android.text.method.ScrollingMovementMethod;

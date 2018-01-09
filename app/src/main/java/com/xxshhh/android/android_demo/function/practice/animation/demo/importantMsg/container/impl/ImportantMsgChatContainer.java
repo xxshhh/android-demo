@@ -4,16 +4,16 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
 import android.app.Activity;
-import android.os.Looper;
-import android.os.MessageQueue;
+import android.content.DialogInterface;
 import android.support.annotation.NonNull;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 import android.widget.FrameLayout;
 
 import com.xxshhh.android.android_demo.function.practice.animation.demo.importantMsg.container.IImportantMsgChatContainer;
-import com.xxshhh.android.android_demo.function.practice.animation.demo.importantMsg.view.animation.CircularRevealView;
-import com.xxshhh.android.android_demo.function.practice.animation.demo.importantMsg.view.animation.ImportantMsgDialogView;
+import com.xxshhh.android.android_demo.function.practice.animation.demo.importantMsg.widget.CircularRevealView;
+import com.xxshhh.android.android_demo.function.practice.animation.demo.importantMsg.widget.ImportantMsgDialogView;
 
 /**
  * 重要消息聊天界面容器
@@ -50,65 +50,62 @@ public class ImportantMsgChatContainer implements IImportantMsgChatContainer {
         mFrameLayout = null;
     }
 
-    private void initDialogView(Object data, final View endLogoView) {
+    private void initDialogView(final Object data, final View endLogoView) {
         final CircularRevealView revealView = getCircularRevealView();
-        final ImportantMsgDialogView dialogView = getDialogView(data);
-        dialogView.setData(data);
-        // 监听绘制
-        Looper.myQueue().addIdleHandler(new MessageQueue.IdleHandler() {
+        revealView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
             @Override
-            public boolean queueIdle() {
-                // 展示动画
-                Animator showAnimation = dialogView.getShowAnimation();
-                // 揭露动画
-                int[] revealLoc = new int[2];
-                revealView.getLocationOnScreen(revealLoc);
-                float centerX = dialogView.getLogoCenterLocation()[0] - revealLoc[0];
-                float centerY = dialogView.getLogoCenterLocation()[1] - revealLoc[1];
-                float r1 = (float) Math.sqrt(centerX * centerX + centerY * centerY);
-                float r2 = (float) Math.sqrt(centerX * centerX + (revealView.getHeight() - centerY) * (revealView.getHeight() - centerY));
-                float startRadius = 0;
-                float endRadius = Math.max(r1, r2);
-                Animator revealAnimation = revealView.getCircularRevealAnimation(centerX, centerY, startRadius, endRadius);
-                // 开始播放动画
-                AnimatorSet animatorSet = new AnimatorSet();
-                animatorSet.playTogether(showAnimation, revealAnimation);
-                animatorSet.start();
-                // 点击事件
-                dialogView.setConfirmEvent(new View.OnClickListener() {
+            public void onGlobalLayout() {
+                revealView.getViewTreeObserver().removeGlobalOnLayoutListener(this);
+                final ImportantMsgDialogView dialogView = getDialogView(data);
+                dialogView.setOnShowListener(new DialogInterface.OnShowListener() {
                     @Override
-                    public void onClick(View v) {
-                        // 变换动画
-                        int[] endLoc = new int[2];
-                        endLogoView.getLocationOnScreen(endLoc);
-                        endLoc[0] += endLogoView.getWidth() / 2;
-                        endLoc[1] += endLogoView.getHeight() / 2;
-                        int startScale = 1;
-                        float endScale = (float) endLogoView.getWidth() / (float) dialogView.getLogoWidth();
-                        Animator transformAnimation = dialogView.getTransformAnimation(endLoc, startScale, endScale);
-                        transformAnimation.addListener(new AnimatorListenerAdapter() {
+                    public void onShow(DialogInterface dialog) {
+                        // 展示动画
+                        Animator showAnimation = dialogView.getShowAnimation();
+                        // 揭露动画
+                        int[] revealLoc = new int[2];
+                        revealView.getLocationOnScreen(revealLoc);
+                        float centerX = dialogView.getLogoCenterLocation()[0] - revealLoc[0];
+                        float centerY = dialogView.getLogoCenterLocation()[1] - revealLoc[1];
+                        float r1 = (float) Math.sqrt(centerX * centerX + centerY * centerY);
+                        float r2 = (float) Math.sqrt(centerX * centerX + (revealView.getHeight() - centerY) * (revealView.getHeight() - centerY));
+                        float startRadius = 0;
+                        float endRadius = Math.max(r1, r2);
+                        Animator revealAnimation = revealView.getCircularRevealAnimation(centerX, centerY, startRadius, endRadius);
+                        // 开始播放动画
+                        AnimatorSet animatorSet = new AnimatorSet();
+                        animatorSet.playTogether(showAnimation, revealAnimation);
+                        animatorSet.start();
+                        // 点击事件
+                        dialogView.setConfirmEvent(new View.OnClickListener() {
                             @Override
-                            public void onAnimationStart(Animator animation) {
-                                super.onAnimationStart(animation);
-                                endLogoView.setVisibility(View.INVISIBLE);
-                            }
-
-                            @Override
-                            public void onAnimationEnd(Animator animation) {
-                                super.onAnimationEnd(animation);
-                                endLogoView.setVisibility(View.VISIBLE);
-                                dialogView.dismiss();
+                            public void onClick(View v) {
+                                // 变换动画
+                                int[] endLoc = new int[2];
+                                endLogoView.getLocationOnScreen(endLoc);
+                                endLoc[0] += endLogoView.getWidth() / 2;
+                                endLoc[1] += endLogoView.getHeight() / 2;
+                                int startScale = 1;
+                                float endScale = (float) endLogoView.getWidth() / (float) dialogView.getLogoWidth();
+                                Animator transformAnimation = dialogView.getTransformAnimation(endLoc, startScale, endScale);
+                                // 渐变背景动画
+                                Animator gradientBackgroundAnimation = revealView.getGradientBackgroundAnimation();
+                                // 开始播放动画
+                                AnimatorSet animator = new AnimatorSet();
+                                animator.playTogether(transformAnimation, gradientBackgroundAnimation);
+                                animator.addListener(new AnimatorListenerAdapter() {
+                                    @Override
+                                    public void onAnimationEnd(Animator animation) {
+                                        super.onAnimationEnd(animation);
+                                        dialogView.dismiss();
+                                    }
+                                });
+                                animator.start();
                             }
                         });
-                        // 渐变背景动画
-                        Animator gradientBackgroundAnimation = revealView.getGradientBackgroundAnimation();
-                        // 开始播放动画
-                        AnimatorSet animator = new AnimatorSet();
-                        animator.playTogether(transformAnimation, gradientBackgroundAnimation);
-                        animator.start();
                     }
                 });
-                return false;
+                dialogView.show();
             }
         });
     }
@@ -132,7 +129,7 @@ public class ImportantMsgChatContainer implements IImportantMsgChatContainer {
     private ImportantMsgDialogView getDialogView(Object data) {
         // 添加弹窗View
         ImportantMsgDialogView dialogView = new ImportantMsgDialogView(mActivity);
-        dialogView.show();
+        dialogView.setData(data);
         return dialogView;
     }
 }
