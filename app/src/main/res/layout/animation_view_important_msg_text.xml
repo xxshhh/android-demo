@@ -7,8 +7,6 @@
         android:id="@+id/tv_content"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:maxHeight="235dp"
-        android:text="2\n22\n222\n2222\n22222\n222222\n2222222\n22222222\n222222222\n2222222222\n22222222222\n222222222222\n2222222222222\n22222222222222\n222222222222222\n2222222222222222"
         android:textColor="#333333"
         android:textSize="15dp"/>
 </merge>

@@ -11,4 +11,5 @@
     <dimen name="animation_rect_round_size">20dp</dimen>
     <dimen name="animation_param_vx">250dp</dimen>
     <dimen name="animation_param_g">3000dp</dimen>
+    <dimen name="animation_msg_scrollview_max_height">235dp</dimen>
 </resources>
