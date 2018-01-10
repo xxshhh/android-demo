@@ -51,15 +51,15 @@ public class ImportantMsgChatContainer implements IImportantMsgChatContainer {
     }
 
     private void initDialogView(final Object data, final View endLogoView) {
-        final CircularRevealView revealView = getCircularRevealView();
-        revealView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+        final ImportantMsgDialogView dialogView = getDialogView(data);
+        dialogView.setOnShowListener(new DialogInterface.OnShowListener() {
             @Override
-            public void onGlobalLayout() {
-                revealView.getViewTreeObserver().removeGlobalOnLayoutListener(this);
-                final ImportantMsgDialogView dialogView = getDialogView(data);
-                dialogView.setOnShowListener(new DialogInterface.OnShowListener() {
+            public void onShow(DialogInterface dialog) {
+                final CircularRevealView revealView = getCircularRevealView();
+                revealView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
                     @Override
-                    public void onShow(DialogInterface dialog) {
+                    public void onGlobalLayout() {
+                        revealView.getViewTreeObserver().removeGlobalOnLayoutListener(this);
                         // 展示动画
                         Animator showAnimation = dialogView.getShowAnimation();
                         // 揭露动画
@@ -80,6 +80,10 @@ public class ImportantMsgChatContainer implements IImportantMsgChatContainer {
                         dialogView.setConfirmEvent(new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
+                                if (endLogoView == null) {
+                                    dialogView.dismiss();
+                                    return;
+                                }
                                 // 变换动画
                                 int[] endLoc = new int[2];
                                 endLogoView.getLocationOnScreen(endLoc);
@@ -105,9 +109,9 @@ public class ImportantMsgChatContainer implements IImportantMsgChatContainer {
                         });
                     }
                 });
-                dialogView.show();
             }
         });
+        dialogView.show();
     }
 
     private FrameLayout getFrameLayout() {
